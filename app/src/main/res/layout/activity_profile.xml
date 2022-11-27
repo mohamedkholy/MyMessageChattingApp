@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ProfileActivity"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/profilee"
+            android:background="@drawable/photo_stroke"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="15dp"/>
+
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@drawable/button_item"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textAllCaps="false"
+            android:text="Change profile photo"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/TextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Update username"
+            android:layout_margin="20dp"
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="#AEB9C0"
+            app:startIconTint="#F8F8F8">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+           android:background="@drawable/button_primary_item"
+            android:textColor="@color/white"
+            android:text="update"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/pro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/white"
+        android:alpha=".7"
+        android:visibility="invisible"
+        >
+
+        <ProgressBar
+
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/primary"
+
+            />
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

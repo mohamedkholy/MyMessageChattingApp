@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "752188417477",
+    "project_id": "mymessage-4eb68",
+    "storage_bucket": "mymessage-4eb68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752188417477:android:f5241487dda6eb1f4197ac",
+        "android_client_info": {
+          "package_name": "com.momo.mymessage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752188417477-adh1gahvtn232ss3qpjm889ptbsdt9pt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.momo.mymessage",
+            "certificate_hash": "2e4212c53cbf7cef6cec45d514c3d6685675d067"
+          }
+        },
+        {
+          "client_id": "752188417477-siojolmm84mpfp6n7d1jvtep1bfep7pi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRD-aROrEfXU5j6KHVFsXxf-kPiFOBaY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752188417477-siojolmm84mpfp6n7d1jvtep1bfep7pi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

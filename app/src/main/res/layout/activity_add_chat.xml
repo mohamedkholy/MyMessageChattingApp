@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.add_chat_Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="Search users "
+            android:textColor="@color/primary"
+            android:textSize="30sp"
+            android:textStyle="bold"
+
+            />
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="1dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/primary"
+
+            />
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/search_item"
+            app:queryHint="Search users .."
+             app:iconifiedByDefault="false"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_margin="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            />
+
+    </LinearLayout>
+
+</FrameLayout>
