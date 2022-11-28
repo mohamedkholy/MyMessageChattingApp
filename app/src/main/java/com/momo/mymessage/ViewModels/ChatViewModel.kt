@@ -1,21 +1,19 @@
-package com.momo.mymessage.ui
+package com.momo.mymessage.ViewModels
 
-import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Task
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.messaging.FirebaseMessagingService
 import com.momo.mymessage.R
 import com.momo.mymessage.db.db_messages_manage
 import com.momo.mymessage.pogo.Message
+import com.momo.mymessage.ui.Chat_Activity
+import com.momo.mymessage.ui.databaseReference
 
 class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:String):ViewModel() {
 
@@ -24,8 +22,7 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
    private  var  idList=ArrayList<String>()
    private  var  list=ArrayList<Message>()
    val liveData=MutableLiveData<ArrayList<Message>>(list)
-    val databaseReference=FirebaseDatabase.getInstance().getReference().child("users")
-   val ref=  databaseReference.child(id!!).child("messages").child(userid).child("chats")
+   val ref= FirebaseDatabase.getInstance().getReference().child("users").child(id!!).child("messages").child(userid).child("chats")
     lateinit var listner:ChildEventListener
     val incoming_Message=MediaPlayer.create(activity,R.raw.incoming)
     var flag=0
@@ -42,7 +39,7 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
 
 
         var listt=ArrayList<Message>()
-        databaseReference.child(id!!).child("messages").child(userid).child("chats").get() .addOnCompleteListener{
+        ref.get() .addOnCompleteListener{
             if(it.isSuccessful){
                 val sp=activity.getSharedPreferences("CurrentUser",0)
                  x= sp.getString("userid",null).toString()
@@ -92,8 +89,8 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?)
             {
                 val message=snapshot.getValue(Message::class.java)
-
-                save_message(message!!)
+                if(message!!.senderid.equals(id))
+                save_message(message)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot){}
@@ -112,12 +109,16 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
             val map= hashMapOf<String,Any>()
             map.put("seen","seen")
 
-            databaseReference.child(userid).child("messages").child(id!!).child("chats").child(message.id!!).updateChildren(map)
-            if(!idList.contains(message.id))
+            FirebaseDatabase.getInstance().getReference().child("users")
+                .child(userid).child("messages").child(id!!).child("chats").child(message.id!!).updateChildren(map)
+            FirebaseDatabase.getInstance().getReference().child("users")
+            .child(id).child("messages").child(userid!!).child("chats").child(message.id!!).updateChildren(map)
+            if(!idList.contains(message.id)){
                 incoming_Message.start()
+
             list.add(message)
             idList.add(message.id!!)
-            dbMessagesManage.addmessage(userid, id!!, message)
+            dbMessagesManage.addmessage(userid, id!!, message)}
 
 
         }
@@ -133,10 +134,10 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
         else {
 
 
-
+            if(!idList.contains(message.id)){
             list.add(message)
             idList.add(message.id!!)
-            dbMessagesManage.addmessage(userid, id!!, message)
+            dbMessagesManage.addmessage(userid, id!!, message)}
 
 
 

@@ -3,6 +3,7 @@ package com.momo.mymessage.ui
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -19,6 +20,7 @@ import com.google.firebase.messaging.ktx.messaging
 import com.momo.mymessage.Adapter.chats_Adabter
 import com.momo.mymessage.pogo.Token
 import com.momo.mymessage.R
+import com.momo.mymessage.ViewModels.HomeChatsViewModel
 import com.momo.mymessage.databinding.ActivityHomeBinding
 import com.momo.mymessage.db.ClearDatabase
 import com.momo.mymessage.db.db_chats_manage
@@ -34,13 +36,16 @@ class home : AppCompatActivity() {
     lateinit var binding:ActivityHomeBinding
     lateinit var dbChatsManage:db_chats_manage
     lateinit var chatschats_Adabter:chats_Adabter
-    var  chats_list= arrayListOf<User>()
-    lateinit var chatsname:ArrayList<String>
+    val  chats_list= arrayListOf<User>()
     lateinit var sp:SharedPreferences
+    lateinit var  spp:SharedPreferences
+    lateinit var  editor:SharedPreferences.Editor
     lateinit var toggle: ActionBarDrawerToggle
     lateinit var drawer_header: View
     lateinit var header_img:ImageView
     lateinit var header_text:TextView
+    lateinit var homeChatsViewModel:HomeChatsViewModel
+
 
     override fun onStart() {
         super.onStart()
@@ -55,14 +60,15 @@ class home : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if(sp!=null){
-            binding.name.setText(sp.getString("username",null))
-        Picasso.get().load(sp.getString("imgUrl",null)).into( binding.img)}
-
         if (chatschats_Adabter!=null)
         chatschats_Adabter.notifyDataSetChanged()
 
+        editor.putString("userid",null)
+        editor.apply()
     }
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
@@ -70,29 +76,22 @@ class home : AppCompatActivity() {
       setContentView(binding.root)
 
 
-
-        sp=getSharedPreferences("info", MODE_PRIVATE)
-        dbChatsManage=db_chats_manage(baseContext)
-        chatsname=dbChatsManage.getChatsid()
-        chats_list=dbChatsManage.getChats(id!!)
-        drawer_header=binding.nav.getHeaderView(0)
-        header_img=drawer_header.findViewById(R.id.profilePhoto)
-        header_text=drawer_header.findViewById(R.id.drawer_text)
-        chatschats_Adabter=chats_Adabter(this@home, chats_list)
-        binding.recvChats.adapter =chatschats_Adabter
+       initial()
 
 
+        homeChatsViewModel=HomeChatsViewModel(this@home)
+        homeChatsViewModel.getChats()
+        homeChatsViewModel.liveData.observe(this@home){
+            chats_list.clear()
+            chats_list.addAll(it)
+            chatschats_Adabter.notifyDataSetChanged()
 
-        if(chats_list.size==0)
-            binding.chatsWord.visibility=View.INVISIBLE
+
+        }
+
 
 
         updateToken(FirebaseInstanceId.getInstance().token!!)
-
-
-
-
-
 
 
         binding.img.setOnClickListener{
@@ -111,8 +110,6 @@ class home : AppCompatActivity() {
       //ActionBar
       setSupportActionBar(binding.toolbar)
       supportActionBar?.setDisplayShowTitleEnabled(false)
-      binding.name.setText(sp.getString("username",null))
-      Picasso.get().load(sp.getString("imgUrl",null)).into( binding.img)
       header_text.setText(sp.getString("username",null))
         Picasso.get().load(sp.getString("imgUrl",null)).into( header_img)
         toggle= ActionBarDrawerToggle(this,binding.drawerLayout,binding.toolbar,R.string.open,R.string.close)
@@ -159,38 +156,20 @@ class home : AppCompatActivity() {
           startActivityForResult(intent,1)
        }
 
+    }
 
 
-        databaseReference.child("users").child(id!!).child("messages").addChildEventListener(object :ChildEventListener{
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                // Log.d("ggg", list_to_get.toString())
-                if(!chatsname.contains( snapshot.key.toString())) {
-                    chatsname.add(snapshot.key.toString())
-                    getusers(snapshot.key.toString())
-                }
+    private fun initial() {
+        spp=getSharedPreferences("CurrentUser", MODE_PRIVATE)
+        editor=spp.edit()
+        sp=getSharedPreferences("info", MODE_PRIVATE)
 
-            }
+        drawer_header=binding.nav.getHeaderView(0)
+        header_img=drawer_header.findViewById(R.id.profilePhoto)
+        header_text=drawer_header.findViewById(R.id.drawer_text)
 
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-
-        })
-
-
+        chatschats_Adabter=chats_Adabter(this@home, chats_list)
+        binding.recvChats.adapter =chatschats_Adabter
     }
 
     fun updateToken(token:String){
@@ -200,26 +179,6 @@ class home : AppCompatActivity() {
 
 
     }
-
-    private fun getusers(idd: String) {
-
-
-            databaseReference.child("users").child(idd).get().addOnSuccessListener{
-             val user=it.getValue(User::class.java)
-
-                dbChatsManage.addChat(id!!,user!!)
-                chats_list.add(user)
-                binding.chatsWord.visibility=View.VISIBLE
-                chatschats_Adabter.notifyDataSetChanged()
-
-
-
-
-        }
-
-
-    }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(toggle.onOptionsItemSelected(item))
@@ -235,14 +194,7 @@ class home : AppCompatActivity() {
 
 
             var user=data!!.getSerializableExtra("user") as? User
-            if(user!=null&&!chatsname.contains(user!!.userid)) {
-                dbChatsManage.addChat(id!!,user)
-                chats_list .add(user)
-                chatsname.add(user.userid!!)
-                binding.chatsWord.visibility=View.VISIBLE
-            chatschats_Adabter.notifyDataSetChanged()
-
-            }
+            homeChatsViewModel.addChat(user!!)
 
 
             }

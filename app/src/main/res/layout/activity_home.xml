@@ -69,26 +69,14 @@
 
 
 
-        <TextView
-            android:id="@+id/chats_word"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chats"
-            android:textStyle="bold"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:textColor="@color/primary"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="1dp"
-            android:background="@color/primary"/>
+
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recv_chats"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 

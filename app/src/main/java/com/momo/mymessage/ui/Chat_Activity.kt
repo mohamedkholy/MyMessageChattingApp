@@ -37,10 +37,10 @@ import com.momo.mymessage.Adapter.InChat_Adabter
 import com.momo.mymessage.Adapter.InChat_Adabter.onListItemClick
 import com.momo.mymessage.Notifications.*
 import com.momo.mymessage.R
+import com.momo.mymessage.ViewModels.ChatViewModel
 import com.momo.mymessage.databinding.ActivityInChatBinding
 import com.momo.mymessage.db.ClearDatabase
 import com.momo.mymessage.db.db_chats_manage
-import com.momo.mymessage.db.db_messages_manage
 import com.momo.mymessage.pogo.*
 import com.momo.mymessage.pogo.Message
 import com.squareup.picasso.Picasso
@@ -62,13 +62,10 @@ class Chat_Activity : AppCompatActivity() {
     lateinit var  userid:String
     var databaseReference=FirebaseDatabase.getInstance().getReference().child("users")
     val storageReference=FirebaseStorage.getInstance().getReference()
-    lateinit var dbMessagesManage: db_messages_manage
     lateinit var clearDatabase: ClearDatabase
     lateinit var  list:ArrayList<Message>
     lateinit var  deletelist:ArrayList<Message>
     lateinit var inchatAdabter: InChat_Adabter
-    lateinit var listener:ChildEventListener
-    lateinit var ref:DatabaseReference
     lateinit var sent_Message:MediaPlayer
     lateinit var Img_Message:Uri
     lateinit var  file_name:String
@@ -81,7 +78,7 @@ class Chat_Activity : AppCompatActivity() {
     lateinit var userSp:SharedPreferences
     lateinit var editor: SharedPreferences.Editor
     lateinit var name:String
-    lateinit var chatViewModel:ChatViewModel
+    lateinit var chatViewModel: ChatViewModel
 
 
 
@@ -132,7 +129,7 @@ class Chat_Activity : AppCompatActivity() {
 
         askFOrMicPer()
 
-        chatViewModel=ChatViewModel(this@Chat_Activity,userid,id!!)
+        chatViewModel= ChatViewModel(this@Chat_Activity,userid,id!!)
         chatViewModel.get_messages()
         chatViewModel.liveData.observe(this, androidx.lifecycle.Observer {
             val x=list.size
@@ -261,7 +258,7 @@ class Chat_Activity : AppCompatActivity() {
                                  val message_img_Url=it.toString()
                                  val message = Message(
                                      text,
-                                     SimpleDateFormat("H:mm a",
+                                     SimpleDateFormat("h:mm a",
                                          Locale.getDefault()).format(Date()),
                                      id!!,"unseen",System.currentTimeMillis().toString()+id,message_img_Url)
 
@@ -282,7 +279,7 @@ class Chat_Activity : AppCompatActivity() {
 
                     val message = Message(
                         binding.chatEditText.text.toString(),
-                        SimpleDateFormat("H:mm a",
+                        SimpleDateFormat("h:mm a",
                             Locale.getDefault()).format(Date()), id!!,"unseen",System.currentTimeMillis().toString()+id,"noImg")
 
                     sendmessage(message)
@@ -349,7 +346,7 @@ class Chat_Activity : AppCompatActivity() {
 
                         val message = Message(
                             "",
-                            SimpleDateFormat("H:mm a", Locale.getDefault()).format(Date()),
+                            SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date()),
                             id!!,
                             "unseen",
                             System.currentTimeMillis().toString()+id,
@@ -407,7 +404,7 @@ class Chat_Activity : AppCompatActivity() {
 
 
         val m= hashMapOf<String,Any>()
-        m.put("last",message.text.toString())
+        m.put("last",message)
 
 
 
@@ -427,9 +424,9 @@ class Chat_Activity : AppCompatActivity() {
                     text=message.text
 
                 val data= Data(id,R.drawable.ic_baseline_message_24,text,name,userid)
-                Log.d("gggggg",userToken)
-                val sender= Sender(data,userToken)
 
+                val sender= Sender(data,userToken)
+               if(!userid.equals(id))
                 apIservices.sendNotification(sender).enqueue(object :Callback<MyResponse>{
                     override fun onResponse(
                         call: Call<MyResponse>,
@@ -475,8 +472,6 @@ class Chat_Activity : AppCompatActivity() {
         binding.recv.adapter=inchatAdabter
         clearDatabase= ClearDatabase(this@Chat_Activity)
         sent_Message=MediaPlayer.create(this@Chat_Activity,R.raw.gg)
-        ref=  databaseReference.child(id!!).child("messages").child(userid).child("chats")
-        dbMessagesManage= db_messages_manage(this@Chat_Activity)
         apIservices=Client.getClient("https://fcm.googleapis.com/").create(APIservices::class.java)
         sp=getSharedPreferences("info", MODE_PRIVATE)
         name=sp.getString("username",null).toString()

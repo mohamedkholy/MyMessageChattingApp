@@ -3,6 +3,7 @@ package com.momo.mymessage.Adapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.momo.mymessage.db.db_chats_manage
 import com.momo.mymessage.pogo.Message
 import com.momo.mymessage.pogo.User
 import com.momo.mymessage.ui.Chat_Activity
+import com.momo.mymessage.ui.binding
 import com.squareup.picasso.Picasso
 
 class chats_Adabter(var activity: Activity,val list:ArrayList<User>) : RecyclerView.Adapter<chats_Adabter.Holder>() {
@@ -41,9 +43,10 @@ val dbChatsManage=db_chats_manage(activity)
         holder.binding.name.setText(list.get(position).name)
 
         Picasso.get().load(list.get(position).Imageurl).into(holder.binding.img)
-
+        if(dbChatsManage.getLastMesssage(list.get(position).userid!!).equals(null))
+            holder.binding.lastMessage.visibility=View.GONE
         holder.binding.lastMessage.setText(dbChatsManage.getLastMesssage(list.get(position).userid!!))
-
+        holder.binding.time.text=dbChatsManage.getLastMesssageTime(list.get(position).userid!!)
 
         holder.binding.unseen.setText(dbChatsManage.getunseen(list.get(position).userid!!))
         if(dbChatsManage.getunseen(list.get(position).userid!!).equals("0"))
@@ -93,7 +96,7 @@ val dbChatsManage=db_chats_manage(activity)
 
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+
             }
 
 
@@ -103,9 +106,28 @@ val dbChatsManage=db_chats_manage(activity)
 
         ref.child(id!!).child("messages").child(list.get(position).userid!!).child("last").addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (!snapshot.getValue().toString().equals("null")){
-                    holder.binding.lastMessage.text = snapshot.getValue().toString()
-                dbChatsManage.setLastMesssage( snapshot.getValue().toString(),list.get(position).userid!!)}
+                var name:String=""
+                var text:String=""
+                val message=snapshot.getValue(Message::class.java)
+                if (message!=null){
+                    if(message.senderid.equals(id))
+                       name ="You: "
+
+
+                        if(message.record!=null)
+                            text="Voice"
+                        else if(message.text!!.isEmpty()&&!message.imgurl.equals("noImg"))
+                            text="Image"
+                        else
+                            text=message.text
+
+
+                    holder.binding.lastMessage.text = name+text
+                    holder.binding.time.text=message.time
+
+                dbChatsManage.setLastMesssage( name+text,list.get(position).userid!!)
+                dbChatsManage.setLastMesssageTime(message.time.toString(),list.get(position).userid!!)
+                }
             }
 
 

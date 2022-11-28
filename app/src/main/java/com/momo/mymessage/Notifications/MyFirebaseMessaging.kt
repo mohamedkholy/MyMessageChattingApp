@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -55,10 +56,11 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
         val intent=Intent(this,Chat_Activity::class.java)
 
         FirebaseDatabase.getInstance().getReference().child("users").child(user.toString()).get().addOnSuccessListener {
+
             val user=it.getValue(User::class.java)
             intent.putExtra("user",user)
             intent.flags=Intent.FLAG_ACTIVITY_CLEAR_TOP
-            val pi=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_IMMUTABLE)
+            val pi=PendingIntent.getActivity(this,System.currentTimeMillis().toInt(),intent,PendingIntent.FLAG_IMMUTABLE)
 
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
             {
@@ -77,6 +79,7 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
                             + baseContext.getPackageName()) + "/" + R.raw.new_message
                 ))
                 .setContentIntent(pi)
+
             val userId=sp.getString("userid",null)
             if(userId.equals(null)||!user!!.userid.equals(userId))
             NotificationManagerCompat.from(this).notify(System.currentTimeMillis().toInt(),builder.build())

@@ -74,6 +74,16 @@ fun addChat(id:String,user: User):Boolean{
 
     }
 
+    fun setLastMesssageTime(time:String,chatID:String){
+        val db=mydatabase.writableDatabase
+        val values= contentValuesOf().apply {
+            put("time",time)
+        }
+        db.update("chats",values,"id=?", arrayOf(chatID))
+
+
+    }
+
 
     fun getLastMesssage(chatID:String):String{
         val db=mydatabase.readableDatabase
@@ -81,6 +91,17 @@ fun addChat(id:String,user: User):Boolean{
         while (cursor.moveToNext()){
             if(cursor.getString(0)!=null)
             return cursor.getString(0)
+
+        }
+        return ""
+    }
+
+    fun getLastMesssageTime(chatID:String):String{
+        val db=mydatabase.readableDatabase
+        val cursor=db.rawQuery("select time from chats where id=?", arrayOf(chatID))
+        while (cursor.moveToNext()){
+            if(cursor.getString(0)!=null)
+                return cursor.getString(0)
 
         }
         return ""

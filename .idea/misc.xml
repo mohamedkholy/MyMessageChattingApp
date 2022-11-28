@@ -23,6 +23,7 @@
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/drawable/roundb.xml" value="0.2535" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/drawable/search_item.xml" value="0.343" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/drawable/textbox.xml" value="0.2535" />
+        <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/drawable/textinput_background.xml" value="0.283" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/drawable/unseen_item.xml" value="0.275" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/drawable/user_badge.xml" value="0.293" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_add_chat.xml" value="0.33" />
@@ -30,7 +31,7 @@
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_home.xml" value="0.33" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_in_chat.xml" value="0.33" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_inchat.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_login.xml" value="0.22" />
+        <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_login_signup.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/activity_profile.xml" value="0.36666666666666664" />
@@ -43,7 +44,7 @@
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_item_me.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_item_other.xml" value="0.365625" />
-        <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_out_item.xml" value="0.35104166666666664" />
+        <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_out_item.xml" value="0.25" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_record_other_item.xml" value="0.5" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_record_seen_item.xml" value="0.365625" />
         <entry key="..\:/Users/mmmme/MyMessage/app/src/main/res/layout/chat_record_unseen_item.xml" value="0.36666666666666664" />
