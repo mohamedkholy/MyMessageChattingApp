@@ -21,11 +21,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.momo.mymessage.ui.FullPhotoActivity
 import com.momo.mymessage.R
 import com.momo.mymessage.pogo.Message
-import com.momo.mymessage.ui.InChat_Activity
+import com.momo.mymessage.ui.Chat_Activity
 import com.squareup.picasso.Picasso
 
 
-class InChat_Adabter (val listPositions:ArrayList<String>, val l:ArrayList<Message>, val activity: InChat_Activity, val list:ArrayList<Message>, onListItemClickk: onListItemClick) : RecyclerView.Adapter<InChat_Adabter.Holder>() {
+class InChat_Adabter (val listPositions:ArrayList<String>, val l:ArrayList<Message>, val activity: Chat_Activity, val list:ArrayList<Message>, onListItemClickk: onListItemClick) : RecyclerView.Adapter<InChat_Adabter.Holder>() {
 
 
     var onListItem:onListItemClick

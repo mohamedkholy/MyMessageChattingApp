@@ -6,10 +6,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.momo.mymessage.R
 import com.momo.mymessage.pogo.User
-import com.momo.mymessage.ui.InChat_Activity
+import com.momo.mymessage.ui.Chat_Activity
 
 
 class MyFirebaseMessaging:FirebaseMessagingService() {
@@ -54,7 +52,7 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
        val notification=message.notification
 
 
-        val intent=Intent(this,InChat_Activity::class.java)
+        val intent=Intent(this,Chat_Activity::class.java)
 
         FirebaseDatabase.getInstance().getReference().child("users").child(user.toString()).get().addOnSuccessListener {
             val user=it.getValue(User::class.java)

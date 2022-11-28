@@ -8,11 +8,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.media.Image
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.ConnectivityManager
-import android.net.DnsResolver
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.*
@@ -32,7 +30,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.storage.FirebaseStorage
@@ -42,9 +39,10 @@ import com.momo.mymessage.Notifications.*
 import com.momo.mymessage.R
 import com.momo.mymessage.databinding.ActivityInChatBinding
 import com.momo.mymessage.db.ClearDatabase
+import com.momo.mymessage.db.db_chats_manage
 import com.momo.mymessage.db.db_messages_manage
+import com.momo.mymessage.pogo.*
 import com.momo.mymessage.pogo.Message
-import com.momo.mymessage.pogo.User
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,10 +51,9 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
-class InChat_Activity : AppCompatActivity() {
+class Chat_Activity : AppCompatActivity() {
 
     private val Gallary_Request_code: Int=2
     private val Camera_request_code: Int=1
@@ -68,13 +65,11 @@ class InChat_Activity : AppCompatActivity() {
     lateinit var dbMessagesManage: db_messages_manage
     lateinit var clearDatabase: ClearDatabase
     lateinit var  list:ArrayList<Message>
-    lateinit var  idList:ArrayList<String>
     lateinit var  deletelist:ArrayList<Message>
     lateinit var inchatAdabter: InChat_Adabter
     lateinit var listener:ChildEventListener
     lateinit var ref:DatabaseReference
     lateinit var sent_Message:MediaPlayer
-    lateinit var incoming_Message:MediaPlayer
     lateinit var Img_Message:Uri
     lateinit var  file_name:String
     var rec: MediaRecorder= MediaRecorder()
@@ -86,6 +81,9 @@ class InChat_Activity : AppCompatActivity() {
     lateinit var userSp:SharedPreferences
     lateinit var editor: SharedPreferences.Editor
     lateinit var name:String
+    lateinit var chatViewModel:ChatViewModel
+
+
 
     override fun onBackPressed()
     {
@@ -96,6 +94,7 @@ class InChat_Activity : AppCompatActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +106,7 @@ class InChat_Activity : AppCompatActivity() {
 
         listner=object :onListItemClick{
             override fun onItemClick(holder: InChat_Adabter.Holder, list: ArrayList<Message>) {
-                           Log.d("ggg",list.size.toString())
+
                 deletelist=list
 
                 if(list.size>0){
@@ -129,24 +128,30 @@ class InChat_Activity : AppCompatActivity() {
         initial()
 
 
-        getchat()
-
-
         setonline()
 
         askFOrMicPer()
 
+        chatViewModel=ChatViewModel(this@Chat_Activity,userid,id!!)
+        chatViewModel.get_messages()
+        chatViewModel.liveData.observe(this, androidx.lifecycle.Observer {
+            val x=list.size
+            val y=it.size
+            list.clear()
+            list.addAll(it)
+            inchatAdabter.notifyDataSetChanged()
+            if(x!=y)
+            binding.recv.scrollToPosition(inchatAdabter.itemCount-1)
+            binding.pro.visibility=View.INVISIBLE
+        })
 
 
 
 
-
-
-
-        binding.deleteMessageButton.setOnClickListener{
+            binding.deleteMessageButton.setOnClickListener{
             binding.cancleDeleteMessageButton.visibility=View.GONE
             binding.deleteMessageButton.visibility=View.GONE
-            deletMessages(deletelist)
+            chatViewModel.deletMessages(deletelist)
             deletelist.clear()
             listpositions.clear()
             inchatAdabter.notifyDataSetChanged()
@@ -156,12 +161,13 @@ class InChat_Activity : AppCompatActivity() {
         binding.cancleDeleteMessageButton.setOnClickListener{
             binding.cancleDeleteMessageButton.visibility=View.GONE
             binding.deleteMessageButton.visibility=View.GONE
-
             deletelist.clear()
             listpositions.clear()
             inchatAdabter.notifyDataSetChanged()
 
         }
+
+
         binding.recordButton.setOnTouchListener(object : View.OnTouchListener {
 
             override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
@@ -179,12 +185,12 @@ class InChat_Activity : AppCompatActivity() {
                         rec.prepare()
                         rec.start()
 
-                        Toast.makeText(this@InChat_Activity, "Recording in progress" , Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@Chat_Activity, "Recording in progress" , Toast.LENGTH_SHORT).show()
                     }
                     catch (e: Exception)
                     {
 
-                        Toast.makeText(this@InChat_Activity, "Sorry! file creation failed!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@Chat_Activity, "Sorry! file creation failed!", Toast.LENGTH_SHORT).show()
 
                     }
 
@@ -257,7 +263,7 @@ class InChat_Activity : AppCompatActivity() {
                                      text,
                                      SimpleDateFormat("H:mm a",
                                          Locale.getDefault()).format(Date()),
-                                     id!!,"unseen",gettime()+id,message_img_Url)
+                                     id!!,"unseen",System.currentTimeMillis().toString()+id,message_img_Url)
 
                                  sendmessage(message)
                                  binding.recv.scrollToPosition(inchatAdabter.getItemCount() - 1)
@@ -277,7 +283,7 @@ class InChat_Activity : AppCompatActivity() {
                     val message = Message(
                         binding.chatEditText.text.toString(),
                         SimpleDateFormat("H:mm a",
-                            Locale.getDefault()).format(Date()), id!!,"unseen",gettime()+id,"noImg")
+                            Locale.getDefault()).format(Date()), id!!,"unseen",System.currentTimeMillis().toString()+id,"noImg")
 
                     sendmessage(message)
 
@@ -307,63 +313,11 @@ class InChat_Activity : AppCompatActivity() {
 
 
 
-
-
-
-                listener=  ref.addChildEventListener(object : ChildEventListener{
-
-                    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?)
-                    {
-                        val message=snapshot.getValue(Message::class.java)
-                        if(!idList.contains(message!!.id))
-                            save_message(message!!)
-
-                    }
-
-                    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?)
-                    {
-                        val message=snapshot.getValue(Message::class.java)
-                        save_message(message!!)
-                    }
-
-                    override fun onChildRemoved(snapshot: DataSnapshot){}
-                    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-                    override fun onCancelled(error: DatabaseError){}
-
-
-                })
-
-
-
-
-
-
-
-
-
     }
 
 
 
-
-
-    private fun deletMessages(deletelist: ArrayList<Message>) {
-
-        for (i in deletelist)
-        {
-            databaseReference.child(id!!).child("messages").child(userid).child("chats").child(i.id!!).removeValue()
-            if(i.senderid!!.equals(id))
-              databaseReference.child(userid!!).child("messages").child(id).child("chats").child(i.id!!).removeValue()
-            list.remove(i)
-            dbMessagesManage.deleteMessage(i.id)
-
-        }
-
-
-
-
-    }
-
+/*
     private fun gettime():String {
         var estimatedServerTimeMs=System.currentTimeMillis()
         val offsetRef = FirebaseDatabase.getInstance().getReference(".info/serverTimeOffset")
@@ -380,7 +334,7 @@ class InChat_Activity : AppCompatActivity() {
         })
 
         return estimatedServerTimeMs.toString()
-    }
+    }*/
 
     private fun sendVoice(x: Uri?) {
         binding.pro.visibility=View.VISIBLE
@@ -398,7 +352,7 @@ class InChat_Activity : AppCompatActivity() {
                             SimpleDateFormat("H:mm a", Locale.getDefault()).format(Date()),
                             id!!,
                             "unseen",
-                            gettime()+id,
+                            System.currentTimeMillis().toString()+id,
                             "noImg",
                             message_record_Url)
 
@@ -433,7 +387,7 @@ class InChat_Activity : AppCompatActivity() {
     }
 
     private fun askFOrMicPer() {
-        if(ContextCompat.checkSelfPermission(this@InChat_Activity,android.Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED)
         {
            permissionlancher3.launch(android.Manifest.permission.RECORD_AUDIO)
 
@@ -472,20 +426,20 @@ class InChat_Activity : AppCompatActivity() {
                 else
                     text=message.text
 
-                val data=Data(id,R.drawable.ic_baseline_message_24,text,name,userid)
+                val data= Data(id,R.drawable.ic_baseline_message_24,text,name,userid)
                 Log.d("gggggg",userToken)
-                val sender=Sender(data,userToken)
+                val sender= Sender(data,userToken)
 
                 apIservices.sendNotification(sender).enqueue(object :Callback<MyResponse>{
                     override fun onResponse(
                         call: Call<MyResponse>,
                         response: Response<MyResponse>
                     ) {
-                        Log.d("gggggg",response.body()!!.response.toString())
+                        Log.d("NotificationResponse",response.body()!!.response.toString())
                     }
 
                     override fun onFailure(call: Call<MyResponse>, t: Throwable) {
-                        Log.d("gggggg","faild")
+                        Log.d("NotificationFaild",t.message.toString())
                     }
                 })
 
@@ -517,12 +471,12 @@ class InChat_Activity : AppCompatActivity() {
         list= ArrayList()
         deletelist=ArrayList()
         listpositions= ArrayList()
-        inchatAdabter= InChat_Adabter(listpositions,deletelist,this@InChat_Activity,list,listner)
-        clearDatabase= ClearDatabase(this@InChat_Activity)
-        sent_Message=MediaPlayer.create(this@InChat_Activity,R.raw.gg)
-        incoming_Message=MediaPlayer.create(this@InChat_Activity,R.raw.incoming)
+        inchatAdabter= InChat_Adabter(listpositions,deletelist,this@Chat_Activity,list,listner)
+        binding.recv.adapter=inchatAdabter
+        clearDatabase= ClearDatabase(this@Chat_Activity)
+        sent_Message=MediaPlayer.create(this@Chat_Activity,R.raw.gg)
         ref=  databaseReference.child(id!!).child("messages").child(userid).child("chats")
-        dbMessagesManage= db_messages_manage(this@InChat_Activity)
+        dbMessagesManage= db_messages_manage(this@Chat_Activity)
         apIservices=Client.getClient("https://fcm.googleapis.com/").create(APIservices::class.java)
         sp=getSharedPreferences("info", MODE_PRIVATE)
         name=sp.getString("username",null).toString()
@@ -567,107 +521,6 @@ class InChat_Activity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
-
-
-    private fun getchat() {
-
-        list=dbMessagesManage.getmessages(userid,id!!)
-        idList=dbMessagesManage.getMessagesIDs(userid,id!!)
-
-        Log.d("getChat:lists size","${list.size}   ${idList.size}")
-
-        inchatAdabter= InChat_Adabter(listpositions,deletelist,this@InChat_Activity,list,listner)
-        binding.recv.adapter=inchatAdabter
-        binding.recv.scrollToPosition(inchatAdabter.getItemCount() - 1);
-        binding.pro.visibility=View.GONE
-
-        var listt=ArrayList<Message>()
-        databaseReference.child(id!!).child("messages").child(userid).child("chats").get() .addOnCompleteListener{
-                    binding.pro.visibility=View.VISIBLE
-            if(it.isSuccessful){
-                for (i in it.result.children) {
-                    val message = i.getValue(Message::class.java)!!
-                     if(!list.contains(message)){
-                       listt.add(message)
-                     }
-                }
-                  Log.d("GetChat:messages array",listt.size.toString())
-                    for (i in 0 until listt.size){
-                        val message = listt[i]
-
-
-
-                         save_message(message)
-
-
-                        }
-
-                }
-               binding.pro.visibility=View.GONE
-               if(listt.size>0){
-                inchatAdabter.notifyDataSetChanged()
-                binding.recv.scrollToPosition(inchatAdabter.getItemCount() - 1);}
-
-            }
-
-
-
-        }
-
-
-    private fun save_message(message: Message) {
-
-        if (!idList.contains(message.id)&&!message.seen.equals("seen")&&message.senderid.equals(userid)){
-
-            val map= hashMapOf<String,Any>()
-            map.put("seen","seen")
-
-            databaseReference.child(userid).child("messages").child(id!!).child("chats").child(message.id!!).updateChildren(map)
-
-            list.add(message)
-            idList.add(message.id!!)
-            dbMessagesManage.addmessage(userid, id!!, message)
-            inchatAdabter.notifyDataSetChanged()
-            binding.recv.scrollToPosition(inchatAdabter.getItemCount() - 1)
-            incoming_Message.start()
-
-        }
-
-        else if(idList.contains(message.id)&&message.seen.equals("seen")&&message.senderid.equals(id)) {
-
-            list.set(idList.indexOf(message.id),Message(message.text,message.time, message.senderid, "seen",
-                message.id, message.imgurl, message.record))!!
-            dbMessagesManage.updateMessage(message.id!!)
-            inchatAdabter.notifyDataSetChanged()
-            binding.recv.scrollToPosition(inchatAdabter.getItemCount() - 1)
-        }
-
-        else {
-
-
-
-                list.add(message)
-                idList.add(message.id!!)
-                dbMessagesManage.addmessage(userid, id!!, message)
-               inchatAdabter.notifyDataSetChanged()
-              binding.recv.scrollToPosition(inchatAdabter.getItemCount() - 1)
-
-
-
-        }
-        binding.pro.visibility=View.GONE
-
-    }
-
-
-
-
     private fun setInfo() {
         val user =intent.getSerializableExtra("user") as? User
         binding.nameChat1.setText(user!!.name)
@@ -678,10 +531,6 @@ class InChat_Activity : AppCompatActivity() {
         editor.putString("userid",userid)
         editor.apply()
     }
-
-
-
-
 
 
 
@@ -696,7 +545,7 @@ class InChat_Activity : AppCompatActivity() {
         }
 
         else{
-            Toast.makeText(this@InChat_Activity,"You can not access gallary", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@Chat_Activity,"You can not access gallary", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -704,19 +553,16 @@ class InChat_Activity : AppCompatActivity() {
     }
 
 
-
-
-
         private fun askStroagePer_getImageFromgallary() {
-        if(ContextCompat.checkSelfPermission(this@InChat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
         {
             val intent=Intent(Intent.ACTION_GET_CONTENT)
             intent.type="image/*"
             startActivityForResult(intent,Gallary_Request_code)
 
         }
-        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@InChat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            val alertDialog= AlertDialog.Builder(this@InChat_Activity)
+        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            val alertDialog= AlertDialog.Builder(this@Chat_Activity)
 
             alertDialog.apply {
                 setTitle("Permission Required")
@@ -737,10 +583,6 @@ class InChat_Activity : AppCompatActivity() {
 
 
 
-
-
-
-
     val permissionlancher2=registerForActivityResult(ActivityResultContracts.RequestPermission())
     {
         if (it) {
@@ -751,14 +593,14 @@ class InChat_Activity : AppCompatActivity() {
 
 
         } else {
-            Toast.makeText(this@InChat_Activity, "You can not access gallary", Toast.LENGTH_SHORT)
+            Toast.makeText(this@Chat_Activity, "You can not access gallary", Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
 
     private fun askStroagePer_getImageFromCamera() {
-        if(ContextCompat.checkSelfPermission(this@InChat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
         {
             val intent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
@@ -766,8 +608,8 @@ class InChat_Activity : AppCompatActivity() {
 
 
         }
-        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@InChat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            val alertDialog= AlertDialog.Builder(this@InChat_Activity)
+        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            val alertDialog= AlertDialog.Builder(this@Chat_Activity)
 
             alertDialog.apply {
                 setTitle("Permission Required")
@@ -785,17 +627,6 @@ class InChat_Activity : AppCompatActivity() {
             permissionlancher2.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -820,7 +651,7 @@ class InChat_Activity : AppCompatActivity() {
 
 
             val p = data!!.extras!!["data"] as Bitmap?
-            Img_Message=getImageUri(this@InChat_Activity,p!!)!!
+            Img_Message=getImageUri(this@Chat_Activity,p!!)!!
 
 
 
@@ -851,17 +682,23 @@ class InChat_Activity : AppCompatActivity() {
         super.onPause()
         editor.putString("userid",null)
         editor.apply()
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         editor.putString("userid",null)
         editor.apply()
-        ref.removeEventListener(listener)
+        if(list.size>0)
+        db_chats_manage(this@Chat_Activity).setLastMesssage( list[list.size-1].text!!,userid!!)
+        db_chats_manage(this@Chat_Activity).updateunseen("0",userid)
+        if(chatViewModel.flag==1)
+            chatViewModel.ref.removeEventListener(chatViewModel.listner)
+
+        this@Chat_Activity.getViewModelStore().clear();
+
 
     }
-
-
 
 
 

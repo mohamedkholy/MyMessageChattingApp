@@ -18,7 +18,7 @@ import com.momo.mymessage.databinding.ChatOutItemBinding
 import com.momo.mymessage.db.db_chats_manage
 import com.momo.mymessage.pogo.Message
 import com.momo.mymessage.pogo.User
-import com.momo.mymessage.ui.InChat_Activity
+import com.momo.mymessage.ui.Chat_Activity
 import com.squareup.picasso.Picasso
 
 class chats_Adabter(var activity: Activity,val list:ArrayList<User>) : RecyclerView.Adapter<chats_Adabter.Holder>() {
@@ -120,7 +120,7 @@ val dbChatsManage=db_chats_manage(activity)
 
         holder.binding.root.setOnClickListener{
 
-            var intent = Intent(activity, InChat_Activity::class.java)
+            var intent = Intent(activity, Chat_Activity::class.java)
             intent.putExtra("user",User(list.get(position).name,list.get(position).Imageurl,list.get(position).userid,list.get(position).email))
 
             activity.startActivity(intent)

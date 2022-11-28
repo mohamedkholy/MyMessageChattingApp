@@ -3,13 +3,11 @@ package com.momo.mymessage.ui
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -19,7 +17,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.momo.mymessage.Adapter.chats_Adabter
-import com.momo.mymessage.Notifications.Token
+import com.momo.mymessage.pogo.Token
 import com.momo.mymessage.R
 import com.momo.mymessage.databinding.ActivityHomeBinding
 import com.momo.mymessage.db.ClearDatabase
@@ -240,6 +238,7 @@ class home : AppCompatActivity() {
             if(user!=null&&!chatsname.contains(user!!.userid)) {
                 dbChatsManage.addChat(id!!,user)
                 chats_list .add(user)
+                chatsname.add(user.userid!!)
                 binding.chatsWord.visibility=View.VISIBLE
             chatschats_Adabter.notifyDataSetChanged()
 

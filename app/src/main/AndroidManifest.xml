@@ -31,7 +31,7 @@
             android:name=".ui.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.InChat_Activity"
+            android:name=".ui.Chat_Activity"
             android:exported="false" />
         <activity
             android:name=".ui.add_chat_Activity"
