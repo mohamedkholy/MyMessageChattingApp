@@ -82,6 +82,7 @@ class Chat_Activity : AppCompatActivity() {
 
 
 
+
     override fun onBackPressed()
     {
         if(binding.contentLayout.visibility==View.VISIBLE){ binding.contentLayout.visibility=View.GONE;return }
@@ -127,7 +128,7 @@ class Chat_Activity : AppCompatActivity() {
 
         setonline()
 
-        askFOrMicPer()
+
 
         chatViewModel= ChatViewModel(this@Chat_Activity,userid,id!!)
         chatViewModel.get_messages()
@@ -169,8 +170,13 @@ class Chat_Activity : AppCompatActivity() {
 
             override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
 
+
                 if (p1!!.action == MotionEvent.ACTION_DOWN)
                 {
+
+
+                    if( ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)== PackageManager.PERMISSION_GRANTED){
+                    binding.recordLayout.visibility=View.VISIBLE
                     binding.recordButtonOnpress.visibility = View.VISIBLE
 
                     try {
@@ -191,10 +197,32 @@ class Chat_Activity : AppCompatActivity() {
 
                     }
 
-                } else if(p1!!.action == MotionEvent.ACTION_UP)
+                    }
+                    else if(ActivityCompat.shouldShowRequestPermissionRationale(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)){
+                        val alertDialog= AlertDialog.Builder(this@Chat_Activity)
+
+                        alertDialog.apply {
+                            setTitle("Permission Required")
+                            alertDialog.setCancelable(false)
+                            setMessage("Please accept the permission to record voice")
+                            setPositiveButton("OK")
+                            {_, _ ->
+                                permissionlancher3.launch(android.Manifest.permission.RECORD_AUDIO)
+                            }
+                        }.create().show()
+
+
+                    }
+                    else{
+                        permissionlancher3.launch(android.Manifest.permission.RECORD_AUDIO)
+                    }
+                }
+
+                else if(p1!!.action == MotionEvent.ACTION_UP
+                    && ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)== PackageManager.PERMISSION_GRANTED)
                 {
                     binding.recordButtonOnpress.visibility = View.GONE
-
+                    binding.recordLayout.visibility=View.GONE
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
                         rec.stop()
@@ -383,14 +411,6 @@ class Chat_Activity : AppCompatActivity() {
 
     }
 
-    private fun askFOrMicPer() {
-        if(ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED)
-        {
-           permissionlancher3.launch(android.Manifest.permission.RECORD_AUDIO)
-
-
-        }
-    }
 
 
 

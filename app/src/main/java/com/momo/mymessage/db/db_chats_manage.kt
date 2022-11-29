@@ -149,4 +149,17 @@ fun addChat(id:String,user: User):Boolean{
     }
 
 
+    fun getChatById(chatID: String):User{
+
+        val db=mydatabase.readableDatabase
+        val cursor=db.rawQuery("select * from chats where id=?", arrayOf(chatID))
+        while (cursor.moveToNext()){
+            return User(cursor.getString(1),cursor.getString(3),cursor.getString(0))
+
+        }
+        return User()
+
+    }
+
+
 }

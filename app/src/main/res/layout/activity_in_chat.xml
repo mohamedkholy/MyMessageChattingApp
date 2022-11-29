@@ -261,37 +261,6 @@
 
 
 
-
-
-
-
-
-    <LinearLayout
-        android:id="@+id/pro"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="@id/recv"
-        app:layout_constraintBottom_toBottomOf="@id/recv"
-        android:gravity="center"
-        android:clickable="false"
-        android:background="#33000000"
-        android:visibility="gone"
-
-        >
-
-
-
-
-        <ProgressBar
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:indeterminateTint="@color/primary"
-            android:layout_gravity="center"
-            />
-
-    </LinearLayout>
-
-
     <RelativeLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
@@ -340,6 +309,59 @@
             />
 
     </RelativeLayout>
+
+
+
+
+    <LinearLayout
+        android:id="@+id/pro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="@id/recv"
+        app:layout_constraintBottom_toBottomOf="@id/recv"
+        android:gravity="center"
+        android:clickable="false"
+        android:background="#33000000"
+        android:visibility="gone"
+
+        >
+
+
+
+
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:indeterminateTint="@color/primary"
+            android:layout_gravity="center"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/record_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="@id/recv"
+        app:layout_constraintBottom_toBottomOf="@id/recv"
+        android:gravity="center"
+        android:clickable="false"
+        android:background="#33000000"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:text="Recording..."
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:drawableTop="@drawable/ic_baseline_mic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            />
+
+    </LinearLayout>
 
 
 

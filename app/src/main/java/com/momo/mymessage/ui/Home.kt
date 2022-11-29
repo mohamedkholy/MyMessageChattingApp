@@ -110,7 +110,7 @@ class home : AppCompatActivity() {
       //ActionBar
       setSupportActionBar(binding.toolbar)
       supportActionBar?.setDisplayShowTitleEnabled(false)
-      header_text.setText(sp.getString("username",null))
+        header_text.setText(sp.getString("username",null))
         Picasso.get().load(sp.getString("imgUrl",null)).into( header_img)
         toggle= ActionBarDrawerToggle(this,binding.drawerLayout,binding.toolbar,R.string.open,R.string.close)
         toggle.drawerArrowDrawable.color=resources.getColor(R.color.white)

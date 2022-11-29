@@ -1,6 +1,7 @@
 package com.momo.mymessage.ViewModels
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -79,6 +80,7 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
 
         databaseReference.child("users").child(idd).get().addOnSuccessListener{
+
             val user=it.getValue(User::class.java)
 
             dbChatsManage.addChat(id!!,user!!)

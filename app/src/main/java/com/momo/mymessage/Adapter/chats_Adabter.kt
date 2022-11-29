@@ -144,7 +144,6 @@ val dbChatsManage=db_chats_manage(activity)
 
             var intent = Intent(activity, Chat_Activity::class.java)
             intent.putExtra("user",User(list.get(position).name,list.get(position).Imageurl,list.get(position).userid,list.get(position).email))
-
             activity.startActivity(intent)
 
         }
