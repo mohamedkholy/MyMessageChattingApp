@@ -85,7 +85,7 @@ class home : AppCompatActivity() {
             chats_list.clear()
             chats_list.addAll(it)
             chatschats_Adabter.notifyDataSetChanged()
-
+            binding.pro.visibility=View.GONE
 
         }
 

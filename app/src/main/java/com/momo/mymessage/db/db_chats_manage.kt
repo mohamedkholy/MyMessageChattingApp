@@ -25,6 +25,7 @@ fun addChat(id:String,user: User):Boolean{
         put("user",id)
         put("last",user.last)
 
+
     }
 
     val u:Long= db.insert("chats",null,value)
@@ -39,7 +40,7 @@ fun addChat(id:String,user: User):Boolean{
         val cursor=db.rawQuery("select * from chats where user =?",l)
         while (cursor.moveToNext()){
 
-          list.add(User(cursor.getString(1),cursor.getString(3),cursor.getString(0),cursor.getString(2),cursor.getString(5)))
+          list.add(User(cursor.getString(1),cursor.getString(3),cursor.getString(0),cursor.getString(2),cursor.getString(5),"",cursor.getString(6),cursor.getString(7)))
 
 
         }

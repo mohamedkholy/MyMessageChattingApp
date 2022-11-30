@@ -35,7 +35,6 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
         val sented= message.data.get("sented")
         sp=getSharedPreferences("CurrentUser", MODE_PRIVATE)
         dbChatsManage=db_chats_manage(this)
-
         val firebaseUser=FirebaseAuth.getInstance().currentUser
 
         if(firebaseUser!=null&&sented.equals(firebaseUser.uid)){
@@ -60,9 +59,7 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
        val notification=message.notification
 
 
-
         val userId=sp.getString("userid",null)
-
 
 
            val user= dbChatsManage.getChatById(user_.toString())
@@ -93,7 +90,7 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
                             + baseContext.getPackageName()) + "/" + R.raw.new_message
                 ))
                 .setContentIntent(pi)
-
+                .setAutoCancel(true)
 
             if(userId.equals(null)||!user!!.userid.equals(userId))
             NotificationManagerCompat.from(this).notify(System.currentTimeMillis().toInt(),builder.build())
@@ -124,7 +121,7 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
                                 + baseContext.getPackageName()) + "/" + R.raw.new_message
                     ))
                     .setContentIntent(pi)
-
+                    .setAutoCancel(true)
 
 
                     NotificationManagerCompat.from(this).notify(System.currentTimeMillis().toInt(),builder.build())

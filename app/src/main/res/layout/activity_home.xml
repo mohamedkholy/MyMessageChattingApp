@@ -59,6 +59,7 @@
         android:id="@+id/drawer_layout"
         >
 <RelativeLayout
+    android:id="@+id/relativ"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -66,10 +67,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-
-
-
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -93,7 +90,34 @@
         android:background="@drawable/action_button"
         android:src="@drawable/ic_baseline_add_24"
         tools:ignore="SpeakableTextPresentCheck" />
+
+
+
+
 </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/pro"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="@id/relativ"
+            app:layout_constraintBottom_toBottomOf="@id/relativ"
+            android:gravity="center"
+            android:clickable="false"
+            android:background="#33000000"
+
+
+            >
+
+
+            <ProgressBar
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:indeterminateTint="@color/primary"
+                android:layout_gravity="center"
+                />
+
+        </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav"
@@ -106,5 +130,7 @@
         />
 
     </androidx.drawerlayout.widget.DrawerLayout>
+
+
 
 </LinearLayout>

@@ -37,48 +37,30 @@ val dbChatsManage=db_chats_manage(activity)
     }
 
     override fun onBindViewHolder(holder: Holder, @SuppressLint("RecyclerView") position: Int) {
+
         if(list.get(position).userid!!.equals(id))
             holder.binding.name.setText("You")
         else
         holder.binding.name.setText(list.get(position).name)
 
         Picasso.get().load(list.get(position).Imageurl).into(holder.binding.img)
-        if(dbChatsManage.getLastMesssage(list.get(position).userid!!).equals(null))
-            holder.binding.lastMessage.visibility=View.GONE
-        holder.binding.lastMessage.setText(dbChatsManage.getLastMesssage(list.get(position).userid!!))
-        holder.binding.time.text=dbChatsManage.getLastMesssageTime(list.get(position).userid!!)
 
-        holder.binding.unseen.setText(dbChatsManage.getunseen(list.get(position).userid!!))
-        if(dbChatsManage.getunseen(list.get(position).userid!!).equals("0"))
+        if(list.get(position).last.equals(null))
+            holder.binding.lastMessage.visibility=View.GONE
+        else
+            holder.binding.lastMessage.visibility=View.VISIBLE
+
+        holder.binding.lastMessage.setText(list.get(position).last)
+
+        holder.binding.time.text=list[position].time
+
+        holder.binding.unseen.setText(list[position].useen)
+        if(list[position].useen.equals("0")||list[position].useen==null)
             holder.binding.unseen.visibility=View.GONE
         else
             holder.binding.unseen.visibility=View.VISIBLE
 
 
-        ref.child(list.get(position).userid!!).child("messages").child(id!!).child("chats").addValueEventListener(object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var count=0
-                for (i in snapshot.children )
-                {var message=i.getValue(Message::class.java) as? Message
-                    if(message!!.senderid.equals(list.get(position).userid!!)&&message!!.seen.equals("unseen"))
-                        count++
-
-                }
-                dbChatsManage.updateunseen(count.toString(),list.get(position).userid!!)
-                if(count!=0){
-                holder.binding.unseen.setText(count.toString())
-                    holder.binding.unseen.visibility=View.VISIBLE
-                }
-                else{
-
-                    holder.binding.unseen.visibility=View.GONE
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
 
 
 
@@ -93,75 +75,19 @@ val dbChatsManage=db_chats_manage(activity)
                     holder.binding.status.visibility=View.INVISIBLE
             }
 
-
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-
+            override fun onCancelled(error: DatabaseError) {}
         })
 
 
 
-        ref.child(id!!).child("messages").child(list.get(position).userid!!).child("last").addValueEventListener(object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var name:String=""
-                var text:String=""
-                val message=snapshot.getValue(Message::class.java)
-                if (message!=null){
-                    if(message.senderid.equals(id))
-                       name ="You: "
 
-
-                        if(message.record!=null)
-                            text="Voice"
-                        else if(message.text!!.isEmpty()&&!message.imgurl.equals("noImg"))
-                            text="Image"
-                        else
-                            text=message.text
-
-
-                    holder.binding.lastMessage.text = name+text
-                    holder.binding.time.text=message.time
-
-                dbChatsManage.setLastMesssage( name+text,list.get(position).userid!!)
-                dbChatsManage.setLastMesssageTime(message.time.toString(),list.get(position).userid!!)
-                }
-            }
-
-
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-
-        })
 
 
         holder.binding.root.setOnClickListener{
-
             var intent = Intent(activity, Chat_Activity::class.java)
             intent.putExtra("user",User(list.get(position).name,list.get(position).Imageurl,list.get(position).userid,list.get(position).email))
             activity.startActivity(intent)
-
         }
-
-
-
-        holder.binding.root.setOnLongClickListener(object : View.OnLongClickListener{
-
-            override fun onLongClick(p0: View?): Boolean {
-
-                Toast.makeText(activity,"ddd",Toast.LENGTH_LONG).show()
-
-
-
-                return true
-            }
-
-        })
 
 
 
@@ -178,6 +104,7 @@ val dbChatsManage=db_chats_manage(activity)
           }
       })
 
+
         ref.child(list.get(position).userid!!).child("Imgurl").addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val img=snapshot.getValue().toString()
@@ -185,9 +112,7 @@ val dbChatsManage=db_chats_manage(activity)
                 Picasso.get().load(img).into(holder.binding.img)
                 dbChatsManage.updateChatimg(img,list.get(position).userid!!)}
             }
-
             override fun onCancelled(error: DatabaseError) {
-
             }
         })
 

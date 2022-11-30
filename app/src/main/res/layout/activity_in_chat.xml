@@ -322,7 +322,7 @@
         android:gravity="center"
         android:clickable="false"
         android:background="#33000000"
-        android:visibility="gone"
+        android:orientation="vertical"
 
         >
 
@@ -335,6 +335,13 @@
             android:indeterminateTint="@color/primary"
             android:layout_gravity="center"
             />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:text="Sending..."/>
 
     </LinearLayout>
 
@@ -347,7 +354,7 @@
         app:layout_constraintBottom_toBottomOf="@id/recv"
         android:gravity="center"
         android:clickable="false"
-        android:background="#33000000"
+        android:background="#88000000"
         android:orientation="horizontal"
         android:visibility="gone">
 

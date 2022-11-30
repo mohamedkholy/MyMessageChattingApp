@@ -239,6 +239,7 @@ class Chat_Activity : AppCompatActivity() {
             }
         })
         binding.tvback.setOnClickListener({
+            if(isTaskRoot)
             startActivity(Intent(this,home::class.java))
             finish() })
         binding.img.setOnClickListener{finish()}
@@ -497,7 +498,7 @@ class Chat_Activity : AppCompatActivity() {
         name=sp.getString("username",null).toString()
        databaseReference.child(userid).child("token").get().addOnSuccessListener {
            userToken=it.child("token").value.toString()
-           Log.d("gggggg",it.toString())
+
         }
 
     }
@@ -691,13 +692,18 @@ class Chat_Activity : AppCompatActivity() {
         super.onResume()
         editor.putString("userid",userid)
         editor.apply()
+        val hashMap= mutableMapOf<String,Any>()
+        hashMap.put("status","online")
+        databaseReference.child(id!!).updateChildren(hashMap)
     }
 
     override fun onPause() {
         super.onPause()
         editor.putString("userid",null)
         editor.apply()
-
+        val hashMap= mutableMapOf<String,Any>()
+        hashMap.put("status","offline")
+        databaseReference.child(id!!).updateChildren(hashMap)
     }
 
     override fun onDestroy() {
