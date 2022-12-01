@@ -51,7 +51,7 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
            android.os.Handler(Looper.getMainLooper()).postDelayed({
 
                   updateChats()
-                 flag=true
+
            },5000)
 
        }
@@ -84,16 +84,106 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
                             var name = ""
                             var text = ""
-                            val message = it.result.child("last").getValue(Message::class.java)
+                            databaseReference.child("users").child(id).child("messages")
+                                .child(userid)
+                                .child("last").get().addOnSuccessListener {
+                                    val message =
+                                        it.getValue(Message::class.java)
+
+                                    if (message != null) {
+                                        if (message.text.equals("") && message.imgurl.equals("") && message.record.equals(
+                                                ""
+                                            )
+                                        )
+                                            text = ""
+                                        else {
+                                            if (message.senderid.equals(id))
+                                                name = "You: "
+                                            if (message.record != null)
+                                                text = "Voice"
+                                            else if (!message.imgurl.equals("noImg"))
+                                                text = "Image"
+                                            else
+                                                text = message.text!!
+                                        }
+
+                                        lastm = name + text
+                                        time = message.time.toString()
+                                        dbChatsManage.setLastMesssage(lastm, userid)
+                                        dbChatsManage.setLastMesssageTime(time, userid)
+                                    }
+                                    val user = dbChatsManage.getChatById(userid)
+                                    chats_list.set(
+                                        chatsname.indexOf(userid),
+                                        User(
+                                            user.name,
+                                            user.Imageurl,
+                                            user.userid,
+                                            user.email,
+                                            lastm,
+                                            "",
+                                            count.toString(),
+                                            time
+                                        )
+                                    )
+
+                                    liveData.value = chats_list
+
+                                }
+                        }
+                    }
+
+
+            }
+            android.os.Handler(Looper.getMainLooper()).postDelayed({
+
+                flag=true
+            },2000)
+
+
+
+            databaseReference.child("users").child(id!!).child("messages").addChildEventListener(object :
+                ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+
+                    if(!chatsname.contains( snapshot.key.toString())) {
+                        chatsname.add(snapshot.key.toString())
+                        getChat(snapshot.key.toString())
+                    }
+
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    val userid = snapshot.key!!
+                    databaseReference.child("users").child(userid).child("messages").child(id!!)
+                        .child("chats").get().addOnSuccessListener {
+                        var lastm = ""
+                        var count = 0
+                        var time: String = ""
+                        for (i in it.children) {
+                            var message = i.getValue(Message::class.java)
+                            if (message!!.senderid.equals(userid) && message!!.seen.equals("unseen"))
+                                count++
+
+                        }
+                        dbChatsManage.updateunseen(count.toString(), userid)
+
+                        var name = ""
+                        var text = ""
+                        databaseReference.child("users").child(id).child("messages").child(userid)
+                            .child("last").get().addOnSuccessListener {
+                            val message = it.getValue(Message::class.java)
                             if (message != null) {
-                                if (message.senderid.equals(id))
+                                if (message.text.equals("")&&message.imgurl.equals("")&&message.record.equals(""))
+                                    text=""
+                               else{ if (message.senderid.equals(id))
                                     name = "You: "
                                 if (message.record != null)
                                     text = "Voice"
-                                else if (message.text!!.isEmpty() && !message.imgurl.equals("noImg"))
+                                else if (!message.imgurl.equals("noImg"))
                                     text = "Image"
                                 else
-                                    text = message.text
+                                    text = message.text!!}
 
                                 lastm = name + text
                                 time = message.time.toString()
@@ -114,64 +204,10 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
                                     time
                                 )
                             )
-
                             liveData.value = chats_list
-
                         }
 
                     }
-
-
-            }
-
-            databaseReference.child("users").child(id!!).child("messages").addChildEventListener(object :
-                ChildEventListener {
-                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-
-                    if(!chatsname.contains( snapshot.key.toString())) {
-                        chatsname.add(snapshot.key.toString())
-                        getChat(snapshot.key.toString())
-                    }
-
-                }
-
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    val userid=snapshot.key!!
-                    databaseReference.child("users").child(userid).child("messages").child(id!!).child("chats").get().addOnSuccessListener {
-                        var lastm=""
-                        var count=0
-                        var time:String=""
-                        for (i in it.children )
-                        {var message=i.getValue(Message::class.java)
-                            if(message!!.senderid.equals(userid)&&message!!.seen.equals("unseen"))
-                                count++
-
-                        }
-                        dbChatsManage.updateunseen(count.toString(),userid)
-
-                        var name= ""
-                        var text = ""
-                        val message = snapshot.child("last").getValue(Message::class.java)
-                        if (message != null) {
-                            if (message.senderid.equals(id))
-                                name = "You: "
-                            if (message.record != null)
-                                text = "Voice"
-                            else if (message.text!!.isEmpty() && !message.imgurl.equals("noImg"))
-                                text = "Image"
-                            else
-                                text = message.text
-
-                            lastm=name + text
-                            time=message.time.toString()
-                            dbChatsManage.setLastMesssage(lastm, userid)
-                            dbChatsManage.setLastMesssageTime(time,userid)
-                        }
-                        val user= dbChatsManage.getChatById(userid)
-                        chats_list.set(chatsname.indexOf(userid),User(user.name,user.Imageurl,user.userid,user.email,lastm,"",count.toString(),time))
-                        liveData.value=chats_list
-                    }
-
                 }
                 override fun onChildRemoved(snapshot: DataSnapshot) {}
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}

@@ -2,6 +2,7 @@ package com.momo.mymessage.ViewModels
 
 import android.media.MediaPlayer
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -152,10 +153,12 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
 
         for (i in deletelist)
         {
-            databaseReference.child(id!!).child("messages").child(userid).child("chats").child(i.id!!).removeValue()
-            if(i.senderid!!.equals(id))
-                databaseReference.child(userid!!).child("messages").child(id).child("chats").child(i.id!!).removeValue()
+            Log.d("wwwwwwwwwwww","ggggggggggggg")
+            FirebaseDatabase.getInstance().getReference("users").child(id!!).child("messages").child(userid).child("chats").child(i.id!!).removeValue()
+            if(i.senderid!!.equals(id)&&i.seen.equals("unseen"))
+                FirebaseDatabase.getInstance().getReference("users").child(userid!!).child("messages").child(id).child("chats").child(i.id!!).removeValue()
             list.remove(i)
+            idList.remove(i.id)
             dbMessagesManage.deleteMessage(i.id)
 
         }

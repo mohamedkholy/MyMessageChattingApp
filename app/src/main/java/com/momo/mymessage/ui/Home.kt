@@ -63,6 +63,12 @@ class home : AppCompatActivity() {
         if (chatschats_Adabter!=null)
         chatschats_Adabter.notifyDataSetChanged()
 
+
+        Log.d("ffffffffffffff","gggggggggggggggggg")
+            header_text.setText(sp.getString("username",null))
+            Picasso.get().load(sp.getString("imgUrl",null)).into( header_img)
+
+
         editor.putString("userid",null)
         editor.apply()
     }
@@ -163,11 +169,9 @@ class home : AppCompatActivity() {
         spp=getSharedPreferences("CurrentUser", MODE_PRIVATE)
         editor=spp.edit()
         sp=getSharedPreferences("info", MODE_PRIVATE)
-
         drawer_header=binding.nav.getHeaderView(0)
         header_img=drawer_header.findViewById(R.id.profilePhoto)
         header_text=drawer_header.findViewById(R.id.drawer_text)
-
         chatschats_Adabter=chats_Adabter(this@home, chats_list)
         binding.recvChats.adapter =chatschats_Adabter
     }

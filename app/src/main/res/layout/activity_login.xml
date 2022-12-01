@@ -112,7 +112,9 @@
     android:text="Sign up"
     android:textSize="20dp"
     android:textAllCaps="false"
-    android:background="#42B72A"
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp"
+    android:background="@drawable/signup_button"
     android:textColor="@color/white"/>
 </LinearLayout>
     <LinearLayout
@@ -122,7 +124,7 @@
         android:gravity="center"
         android:background="@color/white"
         android:alpha=".7"
-        android:visibility="invisible"
+        android:visibility="gone"
         >
 
         <ProgressBar

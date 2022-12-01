@@ -101,7 +101,7 @@ class ProfileActivity : AppCompatActivity() {
 
 
                       val hashMap= hashMapOf<String,Any>().apply {
-                          put("Imgurl",url)
+                          put("Imageurl",url)
                           put("name",binding.username.text.toString())
                       }
 
@@ -110,7 +110,7 @@ class ProfileActivity : AppCompatActivity() {
 
                           if(it.isSuccessful){
                               editor.putString("username",binding.username.text.toString())
-                              editor.putString("imgurl",url)
+                              editor.putString("imgUrl",url)
                               editor.apply()
 
 

@@ -45,7 +45,7 @@ val dbChatsManage=db_chats_manage(activity)
 
         Picasso.get().load(list.get(position).Imageurl).into(holder.binding.img)
 
-        if(list.get(position).last.equals(null))
+        if(list.get(position).last.equals(null)||list.get(position).last.equals(""))
             holder.binding.lastMessage.visibility=View.GONE
         else
             holder.binding.lastMessage.visibility=View.VISIBLE

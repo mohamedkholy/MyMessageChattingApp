@@ -225,12 +225,19 @@ class Chat_Activity : AppCompatActivity() {
                     binding.recordLayout.visibility=View.GONE
                     Handler(Looper.getMainLooper()).postDelayed(
                         {
-                        rec.stop()
-                        rec.release()
-                        rec=MediaRecorder()
+                            try {
+                                rec.stop()
+                                rec.release()
+                                rec=MediaRecorder()
+                                var x=Uri.fromFile(File(file_name))
+                                sendVoice(x)
+                            }
+                            catch (e:Exception){
+                                Log.d("Recording faild",e.message.toString())
+                                Toast.makeText(this@Chat_Activity,"Recording faild",Toast.LENGTH_SHORT)
+                            }
 
-                        var x=Uri.fromFile(File(file_name))
-                        sendVoice(x)
+
 
                     },250)
                 }
@@ -422,13 +429,8 @@ class Chat_Activity : AppCompatActivity() {
 
     private fun sendmessage(message: Message) {
 
-
-
         val m= hashMapOf<String,Any>()
         m.put("last",message)
-
-
-
 
         databaseReference.child(id!!).child("messages").child(userid)
             .child("chats").child(message.id!!).setValue(message).addOnSuccessListener {
@@ -710,8 +712,18 @@ class Chat_Activity : AppCompatActivity() {
         super.onDestroy()
         editor.putString("userid",null)
         editor.apply()
+
+        val latmessage:Message
         if(list.size>0)
-        db_chats_manage(this@Chat_Activity).setLastMesssage( list[list.size-1].text!!,userid!!)
+            latmessage=list[list.size-1]
+        else
+            latmessage=Message("","","","","","","")
+
+            val m= hashMapOf<String,Any>()
+            m.put("last",latmessage)
+            databaseReference.child(id!!).child("messages").child(userid).updateChildren(m)
+        db_chats_manage(this@Chat_Activity).setLastMesssage(latmessage.text!!,userid!!)
+        db_chats_manage(this@Chat_Activity).setLastMesssageTime(latmessage.time!!,userid)
         db_chats_manage(this@Chat_Activity).updateunseen("0",userid)
         if(chatViewModel.flag==1)
             chatViewModel.ref.removeEventListener(chatViewModel.listner)
