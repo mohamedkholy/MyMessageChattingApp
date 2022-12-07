@@ -28,7 +28,7 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
 
     lateinit var sp:SharedPreferences
     lateinit var dbChatsManage: db_chats_manage
-
+    val id=FirebaseAuth.getInstance().currentUser!!.uid
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
@@ -62,7 +62,7 @@ class MyFirebaseMessaging:FirebaseMessagingService() {
         val userId=sp.getString("userid",null)
 
 
-           val user= dbChatsManage.getChatById(user_.toString())
+           val user= dbChatsManage.getChatById(user_.toString(),id)
 
 
             if(user.userid!=null){

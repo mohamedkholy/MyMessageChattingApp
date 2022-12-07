@@ -17,6 +17,7 @@ val mydatabase=MyDataBase(context)
 
 fun addChat(id:String,user: User):Boolean{
    val db:SQLiteDatabase=mydatabase.writableDatabase
+
     val value= contentValuesOf().apply {
         put("name",user.name)
         put("eamil",user.email)
@@ -24,7 +25,8 @@ fun addChat(id:String,user: User):Boolean{
         put("imgurl",user.Imageurl)
         put("user",id)
         put("last",user.last)
-
+        put("time",user.time)
+        put("unseen",user.useen)
 
     }
 
@@ -33,11 +35,17 @@ fun addChat(id:String,user: User):Boolean{
     return u!=-1L
 }
 
+fun deleteChat(id:String,userid:String){
+  val db=mydatabase.writableDatabase
+  db.delete("chats","id=? and user=? ", arrayOf(userid,id))
+
+}
+
     fun getChats(id:String):ArrayList<User>{
         val list=ArrayList<User>()
         val db=mydatabase.readableDatabase
        val l= arrayOf(id)
-        val cursor=db.rawQuery("select * from chats where user =?",l)
+        val cursor=db.rawQuery("select * from chats where user =? ORDER by order1 DESC",l)
         while (cursor.moveToNext()){
 
           list.add(User(cursor.getString(1),cursor.getString(3),cursor.getString(0),cursor.getString(2),cursor.getString(5),"",cursor.getString(6),cursor.getString(7)))
@@ -51,7 +59,7 @@ fun addChat(id:String,user: User):Boolean{
     fun getChatsid():ArrayList<String>{
         val list=ArrayList<String>()
         val db=mydatabase.readableDatabase
-        val cursor=db.rawQuery("select id from chats",null)
+        val cursor=db.rawQuery("select id from chats ORDER by order1 DESC",null)
         while (cursor.moveToNext()){
             list.add(cursor.getString(0))
 
@@ -64,13 +72,12 @@ fun addChat(id:String,user: User):Boolean{
 
 
 
-
     fun setLastMesssage(message:String,chatID:String){
         val db=mydatabase.writableDatabase
         val values= contentValuesOf().apply {
             put("last",message)
         }
-       db.update("chats",values,"id=?", arrayOf(chatID))
+        db.update("chats",values,"id=?", arrayOf(chatID))
 
 
     }
@@ -86,27 +93,9 @@ fun addChat(id:String,user: User):Boolean{
     }
 
 
-    fun getLastMesssage(chatID:String):String{
-        val db=mydatabase.readableDatabase
-        val cursor=db.rawQuery("select last from chats where id=?", arrayOf(chatID))
-        while (cursor.moveToNext()){
-            if(cursor.getString(0)!=null)
-            return cursor.getString(0)
 
-        }
-        return ""
-    }
 
-    fun getLastMesssageTime(chatID:String):String{
-        val db=mydatabase.readableDatabase
-        val cursor=db.rawQuery("select time from chats where id=?", arrayOf(chatID))
-        while (cursor.moveToNext()){
-            if(cursor.getString(0)!=null)
-                return cursor.getString(0)
 
-        }
-        return ""
-    }
 
     fun updateunseen(i:String,chatID: String){
 
@@ -150,17 +139,19 @@ fun addChat(id:String,user: User):Boolean{
     }
 
 
-    fun getChatById(chatID: String):User{
+    fun getChatById(chatID: String,id: String):User{
 
         val db=mydatabase.readableDatabase
-        val cursor=db.rawQuery("select * from chats where id=?", arrayOf(chatID))
+        val cursor=db.rawQuery("select * from chats where id=? and user=?", arrayOf(chatID,id))
         while (cursor.moveToNext()){
-            return User(cursor.getString(1),cursor.getString(3),cursor.getString(0))
+            return User(cursor.getString(1),cursor.getString(3),cursor.getString(0),cursor.getString(2),cursor.getString(5),"",cursor.getString(6),cursor.getString(7))
 
         }
+
         return User()
 
     }
+
 
 
 }

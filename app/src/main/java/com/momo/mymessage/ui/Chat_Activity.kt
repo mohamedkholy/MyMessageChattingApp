@@ -721,7 +721,7 @@ class Chat_Activity : AppCompatActivity() {
 
             val m= hashMapOf<String,Any>()
             m.put("last",latmessage)
-            databaseReference.child(id!!).child("messages").child(userid).updateChildren(m)
+        databaseReference.child(id!!).child("messages").child(userid).updateChildren(m)
         db_chats_manage(this@Chat_Activity).setLastMesssage(latmessage.text!!,userid!!)
         db_chats_manage(this@Chat_Activity).setLastMesssageTime(latmessage.time!!,userid)
         db_chats_manage(this@Chat_Activity).updateunseen("0",userid)

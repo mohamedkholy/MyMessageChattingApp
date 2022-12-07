@@ -96,8 +96,7 @@ return true
                       val imgUrl=it.child("Imageurl").getValue().toString()
                       editor.putString("username",username)
                       editor.putString("imgUrl",imgUrl)
-                     Log.d("ggg",it.toString())
-                      editor.commit()
+                      editor.apply()
                       binding.lin.visibility=View.INVISIBLE
                       val intent=Intent(baseContext, home::class.java)
                       intent.flags=Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

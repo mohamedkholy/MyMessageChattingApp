@@ -29,4 +29,10 @@
         <item name="boxStrokeWidth">2dp</item>
     </style>
 
+    <style name="MyEditTextTheme">
+        <item name="colorControlNormal">#757575</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <item name="colorControlHighlight">@color/primary</item>
+    </style>
+
 </resources>

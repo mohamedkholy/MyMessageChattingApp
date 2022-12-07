@@ -25,7 +25,7 @@ class ProfileActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityProfileBinding
     var profile_image:Uri?=null
-    val id=FirebaseAuth.getInstance().uid
+    val id=FirebaseAuth.getInstance().currentUser!!.uid
     val databaseReference=FirebaseDatabase.getInstance().getReference().child("users").child(id!!)
     val storageReference=FirebaseStorage.getInstance().getReference().child("/usersImage")
     lateinit var sp: SharedPreferences
@@ -41,7 +41,6 @@ class ProfileActivity : AppCompatActivity() {
 
         sp=getSharedPreferences("info", MODE_PRIVATE)
         editor=sp.edit()
-
         setinfo()
 
 
@@ -92,7 +91,8 @@ class ProfileActivity : AppCompatActivity() {
         binding.pro.visibility=View.VISIBLE
 
         if(profile_image!=null){
-            storageReference.child(id!!).delete().addOnSuccessListener {
+
+
 
                 storageReference.child(id!!).putFile(profile_image!!).addOnSuccessListener {
 
@@ -122,7 +122,7 @@ class ProfileActivity : AppCompatActivity() {
                               Toast.makeText(this@ProfileActivity,it.exception!!.message,Toast.LENGTH_LONG).show()
                           }
 
-                      }
+
 
                       binding.pro.visibility=View.INVISIBLE
                   }
@@ -203,6 +203,7 @@ class ProfileActivity : AppCompatActivity() {
 
 
     private fun setinfo() {
+        if(profile_image==null)
         Picasso.get().load(intent.getStringExtra("img")).into(binding.img)
         binding.username.setText(intent.getStringExtra("name"))
     }
@@ -226,6 +227,7 @@ class ProfileActivity : AppCompatActivity() {
     private val mGetContent = registerForActivityResult<String, Uri>(ActivityResultContracts.GetContent())
     { uri -> // Handle the returned Uri
         profile_image=uri
+
         binding.img.setImageURI(profile_image)
     }
 

@@ -64,7 +64,6 @@ class home : AppCompatActivity() {
         chatschats_Adabter.notifyDataSetChanged()
 
 
-        Log.d("ffffffffffffff","gggggggggggggggggg")
             header_text.setText(sp.getString("username",null))
             Picasso.get().load(sp.getString("imgUrl",null)).into( header_img)
 
@@ -88,6 +87,9 @@ class home : AppCompatActivity() {
         homeChatsViewModel=HomeChatsViewModel(this@home)
         homeChatsViewModel.getChats()
         homeChatsViewModel.liveData.observe(this@home){
+            for(i in it){
+                Log.d("llllllllllll",i.toString())
+            }
             chats_list.clear()
             chats_list.addAll(it)
             chatschats_Adabter.notifyDataSetChanged()

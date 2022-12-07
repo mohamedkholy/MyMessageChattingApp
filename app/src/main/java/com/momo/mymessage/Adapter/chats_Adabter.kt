@@ -91,7 +91,7 @@ val dbChatsManage=db_chats_manage(activity)
 
 
 
-      ref.child(list.get(position).userid!!).child("name").addValueEventListener(object :ValueEventListener{
+      ref.child(list[position].userid!!).child("name").addValueEventListener(object :ValueEventListener{
           override fun onDataChange(snapshot: DataSnapshot) {
               val name=snapshot.getValue().toString()
               if(!name.equals("null")&&!list.get(position).userid!!.equals(id))
@@ -105,7 +105,7 @@ val dbChatsManage=db_chats_manage(activity)
       })
 
 
-        ref.child(list.get(position).userid!!).child("Imgurl").addValueEventListener(object :ValueEventListener{
+        ref.child(list[position].userid!!).child("Imageurl").addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val img=snapshot.getValue().toString()
                if(!img.equals("null")){

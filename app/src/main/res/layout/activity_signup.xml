@@ -5,10 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ProfileActivity"
+    android:background="@drawable/primary_background"
     >
 <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -17,127 +19,138 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="4dp"
-        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"
+        android:background="@color/primary"
         android:gravity="center"
         android:text="Sign up "
-        android:textColor="@color/primary"
-        android:textSize="30sp"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         android:textStyle="bold"
 
         />
 
-    <View
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="60dp"
+        android:paddingBottom="60dp"
         android:layout_gravity="center"
-        android:layout_height="1dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/primary"/>
-<de.hdodenhof.circleimageview.CircleImageView
-    android:id="@+id/img"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    android:layout_gravity="center"
-    android:src="@drawable/p"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/login_background"
+        android:orientation="vertical"
+        >
 
-    android:layout_marginTop="10dp"
-    android:background="@drawable/photo_stroke2"
-    android:layout_marginBottom="15dp"/>
-
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/add"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="Add photo +"
-        android:textSize="25sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        android:textStyle="bold"
-        android:textAllCaps="false"
-        android:background="@drawable/button_item"
+        >
+<de.hdodenhof.circleimageview.CircleImageView
+    android:id="@+id/img"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:src="@drawable/profile"
+    tools:ignore="MissingConstraints" />
+
+        <ImageButton
+            android:id="@+id/add"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/add_photo_button"
+            app:layout_constraintStart_toEndOf="@id/img"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="-25dp"
+            android:src="@drawable/camera_24"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:drawableStart="@drawable/ic_outline_email_24"
+        android:drawablePadding="5dp"
+        android:hint="Username"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:inputType="textPersonName"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:theme="@style/MyEditTextTheme"
+        android:singleLine="true"
         />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/TextInputLayoutStyle"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
-        android:layout_margin="15dp"
-        app:boxBackgroundColor="@color/white"
-        app:hintTextColor="#AEB9C0"
-        app:startIconTint="#F8F8F8">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:inputType="textPersonName"
-            android:textColor="@color/black"
-            android:textSize="16dp"
-            android:textCursorDrawable="@null"/>
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/TextInputLayoutStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:drawableStart="@drawable/ic_outline_email_24"
+        android:drawablePadding="5dp"
         android:hint="Email"
-        android:layout_margin="15dp"
-        app:boxBackgroundColor="@color/white"
-        app:hintTextColor="#AEB9C0"
-        app:startIconTint="#F8F8F8">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/black"
-            android:textSize="16dp"
-            android:textCursorDrawable="@null"/>
-    </com.google.android.material.textfield.TextInputLayout>
+        android:layout_marginTop="10dp"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:theme="@style/MyEditTextTheme"
+        android:singleLine="true"
+        />
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/TextInputLayoutStyle"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:layout_margin="15dp"
-        app:boxBackgroundColor="@color/white"
-        app:hintTextColor="#AEB9C0"
-        app:startIconTint="#F8F8F8">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:textSize="16dp"
-            android:textCursorDrawable="@null"/>
-    </com.google.android.material.textfield.TextInputLayout>
+        android:layout_gravity="left"
+        android:drawableStart="@drawable/ic_outline_lock_24"
+        android:drawablePadding="5dp"
+        android:hint="password"
+        android:inputType="textPassword"
+        android:textSize="16sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:theme="@style/MyEditTextTheme"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:singleLine="true"
+        />
 
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/signup"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_margin="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/button_primary_item"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:text="sign up"/>
+        android:text="Sign up"
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:textSize="20sp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </LinearLayout>
+
     <LinearLayout
         android:id="@+id/pro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:background="@color/white"
-        android:alpha=".7"
-        android:visibility="invisible"
+        android:visibility="gone"
         >
 
         <ProgressBar
