@@ -5,17 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
 import com.momo.mymessage.R
-import kotlin.math.log
 
-class MainActivity : AppCompatActivity() {
+
+class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+        setContentView(R.layout.activity_splash)
 
         val auth=FirebaseAuth.getInstance()
         val user=auth.currentUser
@@ -34,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             }
            finish()
 
-       },2200)
+       },3000)
 
     }
 

@@ -7,7 +7,7 @@
         android:bottomRightRadius="10dp"
         />
     <solid
-        android:color="@color/primary"
+        android:color="@color/my_chat_item_color"
         />
     <padding
         android:left="5dp"

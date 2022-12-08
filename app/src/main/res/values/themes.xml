@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:actionOverflowButtonStyle">@style/MyStyle</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">#3F3F8A</item>
+        <item name="android:statusBarColor" tools:targetApi="l">#545B73</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -33,6 +33,17 @@
         <item name="colorControlNormal">#757575</item>
         <item name="colorControlActivated">@color/primary</item>
         <item name="colorControlHighlight">@color/primary</item>
+    </style>
+
+    <style name="backCut" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamilyTopRight">cut</item>
+        <item name="cornerFamilyBottomLeft">cut</item>
+        <item name="cornerFamilyTopLeft">cut</item>
+        <item name="cornerFamilyBottomRight">cut</item>
+        <item name="cornerSizeTopRight">50dp</item>
+        <item name="cornerSizeBottomLeft">50dp</item>
+        <item name="cornerSizeTopLeft">50dp</item>
+        <item name="cornerSizeBottomRight">50dp</item>
     </style>
 
 </resources>

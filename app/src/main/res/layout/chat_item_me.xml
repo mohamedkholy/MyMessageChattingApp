@@ -42,7 +42,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:text="Hello"
-            android:paddingRight="20dp"
+            android:paddingTop="8dp"
+            android:paddingRight="10dp"
             android:textColor="@color/white"
             android:textIsSelectable="true"
             android:textSize="20sp" />

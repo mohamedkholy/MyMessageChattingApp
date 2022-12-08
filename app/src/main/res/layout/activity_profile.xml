@@ -1,68 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ProfileActivity"
-    android:orientation="vertical">
+    android:background="@drawable/primary_background"
+
+    >
 
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/touch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:src="@drawable/profilee"
-            android:background="@drawable/photo_stroke"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="15dp"/>
+        android:orientation="vertical"
+        android:clickable="true"
+        />
 
 
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/add"
+    <TextView
+        android:id="@+id/texttt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/primary"
+        android:gravity="center"
+        android:text="Profile"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lin6"
+        />
+
+    <LinearLayout
+        android:id="@+id/lin6"
+        app:layout_constraintTop_toBottomOf="@id/texttt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="60dp"
+        android:paddingBottom="100dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/login_background"
+        android:orientation="vertical"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:background="@drawable/button_item"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:textAllCaps="false"
-            android:text="Change profile photo"
-            android:textSize="20sp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="30dp"
             android:layout_gravity="center"
-            android:textStyle="bold"
+            >
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/profile"
+                tools:ignore="MissingConstraints" />
 
-            />
+            <ImageButton
+                android:id="@+id/add"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/add_photo_button"
+                app:layout_constraintStart_toEndOf="@id/img"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="-25dp"
+                android:src="@drawable/camera_24"
+                />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayoutStyle"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Update username"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="20dp"
-            app:boxBackgroundColor="@color/white"
-            app:hintTextColor="#AEB9C0"
-            app:startIconTint="#F8F8F8">
+            android:layout_marginEnd="20dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:drawableStart="@drawable/ic_baseline_person_outline_24"
+            android:drawablePadding="5dp"
+            android:hint="Username"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:inputType="textPersonName"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:theme="@style/MyEditTextTheme"
+            android:singleLine="true"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"
+            />
+
+            <TextView
+                android:id="@+id/username_tv"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:inputType="textPersonName"
-                android:textColor="@color/black"
-                android:textCursorDrawable="@null"
-                android:textSize="16dp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="5dp"
+                android:background="@drawable/update_name_textview_background"
+                android:drawableEnd="@drawable/ic_outline_drive_file_rename_outline_24"
+                />
 
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
@@ -70,23 +126,29 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/update"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-           android:background="@drawable/button_primary_item"
-            android:textColor="@color/white"
-            android:text="update"/>
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_primary_item"
+            android:text="Update profile"
+            android:textAllCaps="false"
+            android:textColor="@color/primary"
+            android:textSize="20sp" />
+
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/pro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@color/white"
-        android:alpha=".7"
-        android:visibility="invisible"
+        android:background="#99000000"
+        android:visibility="gone"
         >
 
         <ProgressBar
@@ -102,4 +164,5 @@
     </LinearLayout>
 
 
-</FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

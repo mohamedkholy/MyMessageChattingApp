@@ -14,7 +14,7 @@ import com.momo.mymessage.R
 import com.momo.mymessage.db.db_messages_manage
 import com.momo.mymessage.pogo.Message
 import com.momo.mymessage.ui.Chat_Activity
-import com.momo.mymessage.ui.databaseReference
+
 
 class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:String):ViewModel() {
 

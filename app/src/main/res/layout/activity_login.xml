@@ -99,7 +99,7 @@
             android:text="Forgot password"
             android:layout_marginTop="5dp"
             android:textColor="#103288"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/login_b"

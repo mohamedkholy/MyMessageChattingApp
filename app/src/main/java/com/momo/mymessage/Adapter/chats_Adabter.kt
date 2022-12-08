@@ -20,7 +20,6 @@ import com.momo.mymessage.db.db_chats_manage
 import com.momo.mymessage.pogo.Message
 import com.momo.mymessage.pogo.User
 import com.momo.mymessage.ui.Chat_Activity
-import com.momo.mymessage.ui.binding
 import com.squareup.picasso.Picasso
 
 class chats_Adabter(var activity: Activity,val list:ArrayList<User>) : RecyclerView.Adapter<chats_Adabter.Holder>() {

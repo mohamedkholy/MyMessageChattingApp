@@ -4,11 +4,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -34,10 +37,12 @@ class ProfileActivity : AppCompatActivity() {
     var flag=false
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         sp=getSharedPreferences("info", MODE_PRIVATE)
         editor=sp.edit()
@@ -53,6 +58,25 @@ class ProfileActivity : AppCompatActivity() {
             flag=true
 
         }
+
+        binding.usernameTv.setOnClickListener{
+            binding.usernameTv.visibility=View.INVISIBLE
+            binding.username.visibility=View.VISIBLE
+
+        }
+
+
+        binding.touch.setOnTouchListener(object :View.OnTouchListener{
+            override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+                if(p1!!.action==MotionEvent.ACTION_DOWN)
+                {
+                    binding.usernameTv.visibility=View.VISIBLE
+                    binding.username.visibility=View.INVISIBLE
+                    binding.usernameTv.setText(binding.username.text)
+                }
+                return false
+            }
+        })
 
 
         binding.img.setOnClickListener{
@@ -89,9 +113,11 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateProfile() {
         binding.pro.visibility=View.VISIBLE
+        binding.usernameTv.visibility=View.VISIBLE
+        binding.username.visibility=View.INVISIBLE
+        binding.usernameTv.setText(binding.username.text)
 
         if(profile_image!=null){
-
 
 
                 storageReference.child(id!!).putFile(profile_image!!).addOnSuccessListener {
@@ -203,9 +229,11 @@ class ProfileActivity : AppCompatActivity() {
 
 
     private fun setinfo() {
+
         if(profile_image==null)
         Picasso.get().load(intent.getStringExtra("img")).into(binding.img)
         binding.username.setText(intent.getStringExtra("name"))
+        binding.usernameTv.setText(intent.getStringExtra("name"))
     }
 
 
@@ -228,7 +256,7 @@ class ProfileActivity : AppCompatActivity() {
     { uri -> // Handle the returned Uri
         profile_image=uri
 
-        binding.img.setImageURI(profile_image)
+        Picasso.get().load(profile_image).into(binding.img)
     }
 
 }

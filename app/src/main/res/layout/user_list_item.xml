@@ -11,6 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="3dp"
+        app:cardCornerRadius="20dp"
+        app:contentPadding="8dp"
+        app:cardBackgroundColor="@color/primary"
         app:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,8 +23,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:background="@drawable/photo_stroke2"
                 android:src="@drawable/profile"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,12 +41,12 @@
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="3dp"
-                    android:text="sdgd"
-                    android:textColor="@color/black"
 
+                    android:text="sdgd"
+                    android:textColor="@color/white"
+                    android:singleLine="true"
                     android:textSize="20sp" />
 
                 <TextView
@@ -52,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:layout_gravity="bottom"
+                    android:textColor="@color/white"
                     android:layout_marginBottom="10dp" />
 
 

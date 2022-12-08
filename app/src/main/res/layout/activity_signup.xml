@@ -77,7 +77,7 @@
         android:layout_gravity="left"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:drawableStart="@drawable/ic_outline_email_24"
+        android:drawableStart="@drawable/ic_baseline_person_outline_24"
         android:drawablePadding="5dp"
         android:hint="Username"
         android:textColor="@color/black"

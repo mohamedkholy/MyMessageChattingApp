@@ -7,7 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#3F3588</color>
+    <color name="primary">#323645</color>
     <color name="blue">#41A5E1</color>
     <color name="list_background">#EDDFDF</color>
+    <color name="my_chat_item_color">#095167</color>
 </resources>

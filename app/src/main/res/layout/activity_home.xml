@@ -57,6 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/drawer_layout"
+
         >
 <RelativeLayout
     android:id="@+id/relativ"
@@ -71,9 +72,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recv_chats"
+            android:paddingTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
+            android:background="#22242F"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
@@ -81,8 +83,8 @@
 
     <ImageButton
         android:id="@+id/add_chat"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="17dp"
@@ -105,8 +107,7 @@
             android:gravity="center"
             android:clickable="false"
             android:background="#33000000"
-
-
+            android:visibility="gone"
             >
 
 
@@ -121,12 +122,16 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav"
+        android:background="#22242F"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:headerLayout="@layout/drawer_header_layout"
         app:menu="@menu/option_menu"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+
         />
 
     </androidx.drawerlayout.widget.DrawerLayout>
