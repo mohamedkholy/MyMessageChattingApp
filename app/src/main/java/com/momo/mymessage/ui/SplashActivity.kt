@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.momo.mymessage.R
 
@@ -16,9 +17,7 @@ class SplashActivity : AppCompatActivity() {
 
         val auth=FirebaseAuth.getInstance()
         val user=auth.currentUser
-
-
-
+       Log.d("ggggggggggg",user.toString())
        Handler(Looper.getMainLooper()).postDelayed({
             if(user==null){
            var intent=Intent(this, login::class.java)
@@ -31,7 +30,7 @@ class SplashActivity : AppCompatActivity() {
             }
            finish()
 
-       },3000)
+       },2500)
 
     }
 

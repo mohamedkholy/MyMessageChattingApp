@@ -107,14 +107,13 @@
             android:gravity="center"
             android:clickable="false"
             android:background="#33000000"
-            android:visibility="gone"
             >
 
 
             <ProgressBar
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:indeterminateTint="@color/primary"
+                android:indeterminateTint="@color/white"
                 android:layout_gravity="center"
                 />
 

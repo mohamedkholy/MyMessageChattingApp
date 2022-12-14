@@ -1,13 +1,9 @@
 package com.momo.mymessage.db
 
-import android.net.Uri
-import android.util.Log
 import androidx.core.content.contentValuesOf
-import androidx.core.net.toUri
 import com.momo.mymessage.pogo.Message
-import com.momo.mymessage.pogo.User
 
-class db_messages_manage(val context:android.content.Context) {
+class dbMessagesManage(val context:android.content.Context) {
     val mydatabase=MyDataBase(context)
 
 

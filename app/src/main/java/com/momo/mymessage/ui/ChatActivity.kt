@@ -28,19 +28,20 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.storage.FirebaseStorage
-import com.momo.mymessage.Adapter.InChat_Adabter
-import com.momo.mymessage.Adapter.InChat_Adabter.onListItemClick
+import com.momo.mymessage.Adapter.ChatAdabter
+import com.momo.mymessage.Adapter.ChatAdabter.onListItemClick
 import com.momo.mymessage.Notifications.*
 import com.momo.mymessage.R
 import com.momo.mymessage.ViewModels.ChatViewModel
-import com.momo.mymessage.databinding.ActivityInChatBinding
+import com.momo.mymessage.databinding.ActivityChatBinding
 import com.momo.mymessage.db.ClearDatabase
-import com.momo.mymessage.db.db_chats_manage
+import com.momo.mymessage.db.dbChatsManage
 import com.momo.mymessage.pogo.*
 import com.momo.mymessage.pogo.Message
 import com.squareup.picasso.Picasso
@@ -53,32 +54,33 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class Chat_Activity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity() {
 
     private val Gallary_Request_code: Int=2
     private val Camera_request_code: Int=1
-    lateinit var binding:ActivityInChatBinding
-    val id=FirebaseAuth.getInstance().uid
-    lateinit var  userid:String
-    var databaseReference=FirebaseDatabase.getInstance().getReference().child("users")
-    val storageReference=FirebaseStorage.getInstance().getReference()
-    lateinit var clearDatabase: ClearDatabase
-    lateinit var  list:ArrayList<Message>
-    lateinit var  deletelist:ArrayList<Message>
-    lateinit var inchatAdabter: InChat_Adabter
-    lateinit var sent_Message:MediaPlayer
-    lateinit var Img_Message:Uri
-    lateinit var  file_name:String
-    var rec: MediaRecorder= MediaRecorder()
-    lateinit var listpositions:ArrayList<String>
-    lateinit var listner: onListItemClick
-    lateinit var apIservices: APIservices
-    lateinit var userToken:String
-    lateinit var sp:SharedPreferences
-    lateinit var userSp:SharedPreferences
-    lateinit var editor: SharedPreferences.Editor
-    lateinit var name:String
-    lateinit var chatViewModel: ChatViewModel
+    private lateinit var binding:ActivityChatBinding
+    private val id=FirebaseAuth.getInstance().uid
+    private lateinit var  userid:String
+    private var databaseReference=FirebaseDatabase.getInstance().getReference().child("users")
+    private val storageReference=FirebaseStorage.getInstance().getReference()
+    private lateinit var clearDatabase: ClearDatabase
+    private lateinit var  list:ArrayList<Message>
+    private lateinit var  deletelist:ArrayList<Message>
+    private lateinit var inchatAdabter: ChatAdabter
+    private lateinit var sent_Message:MediaPlayer
+    private lateinit var Img_Message:Uri
+    private lateinit var  file_name:String
+    private var rec: MediaRecorder= MediaRecorder()
+    private lateinit var listpositions:ArrayList<String>
+    private lateinit var listner: onListItemClick
+    private lateinit var apIservices: APIservices
+    private lateinit var userToken:String
+    private lateinit var sp:SharedPreferences
+    private lateinit var userSp:SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+    private lateinit var name:String
+    private lateinit var chatViewModel: ChatViewModel
+    private lateinit var  timerTask:TimerTask
 
 
 
@@ -96,14 +98,14 @@ class Chat_Activity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityInChatBinding.inflate(layoutInflater)
+        binding=ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
 
 
         listner=object :onListItemClick{
-            override fun onItemClick(holder: InChat_Adabter.Holder, list: ArrayList<Message>) {
+            override fun onItemClick(holder: ChatAdabter.Holder, list: ArrayList<Message>) {
 
                 deletelist=list
 
@@ -130,16 +132,16 @@ class Chat_Activity : AppCompatActivity() {
 
 
 
-        chatViewModel= ChatViewModel(this@Chat_Activity,userid,id!!)
+        chatViewModel= ViewModelProvider(this).get(ChatViewModel::class.java)
         chatViewModel.get_messages()
-        chatViewModel.liveData.observe(this, androidx.lifecycle.Observer {
+        chatViewModel.liveData.observe(this@ChatActivity, androidx.lifecycle.Observer {
             val x=list.size
             val y=it.size
             list.clear()
             list.addAll(it)
             inchatAdabter.notifyDataSetChanged()
             if(x!=y)
-            binding.recv.scrollToPosition(inchatAdabter.itemCount-1)
+             binding.recv.scrollToPosition(inchatAdabter.itemCount-1)
             binding.pro.visibility=View.INVISIBLE
         })
 
@@ -169,13 +171,40 @@ class Chat_Activity : AppCompatActivity() {
         binding.recordButton.setOnTouchListener(object : View.OnTouchListener {
 
             override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+                val t = Timer("hello", true)
 
 
                 if (p1!!.action == MotionEvent.ACTION_DOWN)
-                {
 
+                {  var minute=0
+                    var seconds=0
+                    var hour=0
+                      timerTask= object : TimerTask() {
+                        override fun run() {
+                            Log.d("gggggggggggggg","run")
+                            binding.recordingTimeTv.post {
+                                Log.d("gggggggggggggg","post")
+                                seconds++
+                                if (seconds === 60) {
+                                    seconds = 0
+                                    minute++
+                                }
+                                if (minute === 60) {
+                                    minute = 0
+                                    hour++
+                                }
+                                binding.recordingTimeTv.setText(
+                                    (""
+                                            + if (hour > 9) hour else "0$hour") + " : "
+                                            + (if (minute > 9) minute else "0$minute")
+                                        .toString() + " : "
+                                            + if (seconds > 9) seconds else "0$seconds"
+                                )
+                            }
+                        }
+                    }
 
-                    if( ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)== PackageManager.PERMISSION_GRANTED){
+                    if( ContextCompat.checkSelfPermission(this@ChatActivity,android.Manifest.permission.RECORD_AUDIO)== PackageManager.PERMISSION_GRANTED){
                     binding.recordLayout.visibility=View.VISIBLE
                     binding.recordButtonOnpress.visibility = View.VISIBLE
 
@@ -188,18 +217,23 @@ class Chat_Activity : AppCompatActivity() {
                         rec.prepare()
                         rec.start()
 
-                        Toast.makeText(this@Chat_Activity, "Recording in progress" , Toast.LENGTH_SHORT).show()
+
+
+                        t.schedule(timerTask,1,1000)
+
+
+                        Toast.makeText(this@ChatActivity, "Recording in progress" , Toast.LENGTH_SHORT).show()
                     }
                     catch (e: Exception)
                     {
 
-                        Toast.makeText(this@Chat_Activity, "Sorry! file creation failed!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ChatActivity, "Sorry! file creation failed!", Toast.LENGTH_SHORT).show()
 
                     }
 
                     }
-                    else if(ActivityCompat.shouldShowRequestPermissionRationale(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)){
-                        val alertDialog= AlertDialog.Builder(this@Chat_Activity)
+                    else if(ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity,android.Manifest.permission.RECORD_AUDIO)){
+                        val alertDialog= AlertDialog.Builder(this@ChatActivity)
 
                         alertDialog.apply {
                             setTitle("Permission Required")
@@ -219,7 +253,7 @@ class Chat_Activity : AppCompatActivity() {
                 }
 
                 else if(p1!!.action == MotionEvent.ACTION_UP
-                    && ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.RECORD_AUDIO)== PackageManager.PERMISSION_GRANTED)
+                    && ContextCompat.checkSelfPermission(this@ChatActivity,android.Manifest.permission.RECORD_AUDIO)== PackageManager.PERMISSION_GRANTED)
                 {
                     binding.recordButtonOnpress.visibility = View.GONE
                     binding.recordLayout.visibility=View.GONE
@@ -231,13 +265,15 @@ class Chat_Activity : AppCompatActivity() {
                                 rec=MediaRecorder()
                                 var x=Uri.fromFile(File(file_name))
                                 sendVoice(x)
+                                t.cancel()
+                                t.purge()
+                                timerTask.cancel()
+
                             }
                             catch (e:Exception){
                                 Log.d("Recording faild",e.message.toString())
-                                Toast.makeText(this@Chat_Activity,"Recording faild",Toast.LENGTH_SHORT)
+                                Toast.makeText(this@ChatActivity,"Recording faild",Toast.LENGTH_SHORT)
                             }
-
-
 
                     },250)
                 }
@@ -247,7 +283,7 @@ class Chat_Activity : AppCompatActivity() {
         })
         binding.tvback.setOnClickListener({
             if(isTaskRoot)
-            startActivity(Intent(this,home::class.java))
+             startActivity(Intent(this,home::class.java))
             finish() })
         binding.img.setOnClickListener{finish()}
         binding.closeContentImg.setOnClickListener{
@@ -284,7 +320,8 @@ class Chat_Activity : AppCompatActivity() {
 
                 if(binding.contentImgContianer.visibility==View.VISIBLE){
                     binding.contentImgContianer.visibility=View.GONE
-                   val downloadref=  storageReference.child("/messages_Imgs").child(SimpleDateFormat("H:mm:ss", Locale.getDefault()).format(Date())+id)
+
+                    val downloadref=  storageReference.child("/messages_Imgs").child(SimpleDateFormat("H:mm:ss", Locale.getDefault()).format(Date())+id)
 
                         downloadref.putFile(Img_Message).addOnCompleteListener{
 
@@ -446,7 +483,7 @@ class Chat_Activity : AppCompatActivity() {
                 else
                     text=message.text
 
-                val data= Data(id,R.drawable.ic_baseline_message_24,text,name,userid)
+                val data= Data(id,R.drawable.splash,text,name,userid)
 
                 val sender= Sender(data,userToken)
                if(!userid.equals(id))
@@ -491,10 +528,10 @@ class Chat_Activity : AppCompatActivity() {
         list= ArrayList()
         deletelist=ArrayList()
         listpositions= ArrayList()
-        inchatAdabter= InChat_Adabter(listpositions,deletelist,this@Chat_Activity,list,listner)
+        inchatAdabter= ChatAdabter(listpositions,deletelist,this@ChatActivity,list,listner)
         binding.recv.adapter=inchatAdabter
-        clearDatabase= ClearDatabase(this@Chat_Activity)
-        sent_Message=MediaPlayer.create(this@Chat_Activity,R.raw.gg)
+        clearDatabase= ClearDatabase(this@ChatActivity)
+        sent_Message=MediaPlayer.create(this@ChatActivity,R.raw.gg)
         apIservices=Client.getClient("https://fcm.googleapis.com/").create(APIservices::class.java)
         sp=getSharedPreferences("info", MODE_PRIVATE)
         name=sp.getString("username",null).toString()
@@ -563,7 +600,7 @@ class Chat_Activity : AppCompatActivity() {
         }
 
         else{
-            Toast.makeText(this@Chat_Activity,"You can not access gallary", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ChatActivity,"You can not access gallary", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -572,15 +609,15 @@ class Chat_Activity : AppCompatActivity() {
 
 
         private fun askStroagePer_getImageFromgallary() {
-        if(ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(this@ChatActivity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
         {
             val intent=Intent(Intent.ACTION_GET_CONTENT)
             intent.type="image/*"
             startActivityForResult(intent,Gallary_Request_code)
 
         }
-        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            val alertDialog= AlertDialog.Builder(this@Chat_Activity)
+        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            val alertDialog= AlertDialog.Builder(this@ChatActivity)
 
             alertDialog.apply {
                 setTitle("Permission Required")
@@ -611,14 +648,14 @@ class Chat_Activity : AppCompatActivity() {
 
 
         } else {
-            Toast.makeText(this@Chat_Activity, "You can not access gallary", Toast.LENGTH_SHORT)
+            Toast.makeText(this@ChatActivity, "You can not access gallary", Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
 
     private fun askStroagePer_getImageFromCamera() {
-        if(ContextCompat.checkSelfPermission(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(this@ChatActivity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)
         {
             val intent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
@@ -626,8 +663,8 @@ class Chat_Activity : AppCompatActivity() {
 
 
         }
-        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@Chat_Activity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            val alertDialog= AlertDialog.Builder(this@Chat_Activity)
+        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@ChatActivity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            val alertDialog= AlertDialog.Builder(this@ChatActivity)
 
             alertDialog.apply {
                 setTitle("Permission Required")
@@ -668,11 +705,8 @@ class Chat_Activity : AppCompatActivity() {
         else if(requestCode==Camera_request_code){
 
 
-            val p = data!!.extras!!["data"] as Bitmap?
-            Img_Message=getImageUri(this@Chat_Activity,p!!)!!
-
-
-
+            val ImgBitmap = data!!.extras!!["data"] as Bitmap?
+            Img_Message=getImageUri(this@ChatActivity,ImgBitmap!!)!!
 
 
 
@@ -719,16 +753,16 @@ class Chat_Activity : AppCompatActivity() {
         else
             latmessage=Message("","","","","","","")
 
-            val m= hashMapOf<String,Any>()
-            m.put("last",latmessage)
+        val m= hashMapOf<String,Any>()
+        m.put("last",latmessage)
         databaseReference.child(id!!).child("messages").child(userid).updateChildren(m)
-        db_chats_manage(this@Chat_Activity).setLastMesssage(latmessage.text!!,userid!!)
-        db_chats_manage(this@Chat_Activity).setLastMesssageTime(latmessage.time!!,userid)
-        db_chats_manage(this@Chat_Activity).updateunseen("0",userid)
+        dbChatsManage(this@ChatActivity).setLastMesssage(latmessage.text!!,userid!!)
+        dbChatsManage(this@ChatActivity).setLastMesssageTime(latmessage.time!!,userid)
+        dbChatsManage(this@ChatActivity).updateunseen("0",userid)
         if(chatViewModel.flag==1)
-            chatViewModel.ref.removeEventListener(chatViewModel.listner)
+            chatViewModel.removeListener()
 
-        this@Chat_Activity.getViewModelStore().clear();
+        this@ChatActivity.getViewModelStore().clear();
 
 
     }

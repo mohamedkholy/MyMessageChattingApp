@@ -1,47 +1,45 @@
 package com.momo.mymessage.ViewModels
 
-import android.app.Activity
-import android.os.Looper
-import android.util.Log
-import android.view.View
+
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.momo.mymessage.db.db_chats_manage
+import com.momo.mymessage.db.dbChatsManage
 import com.momo.mymessage.pogo.Message
 import com.momo.mymessage.pogo.User
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.awaitAll
-import java.util.logging.Handler
-
-class HomeChatsViewModel(activity: Activity) : ViewModel() {
-
-    val liveData=MutableLiveData<ArrayList<User>>()
-    lateinit var chats_list:ArrayList<User>
-    lateinit var chatsname:ArrayList<String>
-     var toupdateList=ArrayList<String>()
-    val databaseReference= FirebaseDatabase.getInstance().getReference()
-    val dbChatsManage= db_chats_manage(activity)
-    val id=FirebaseAuth.getInstance().currentUser!!.uid
-     var count=0
-     var ii=0
 
 
+class HomeChatsViewModel(application:Application) : AndroidViewModel(application) {
+
+
+    private val context = getApplication<Application>().applicationContext
+    private val id=FirebaseAuth.getInstance().currentUser!!.uid
+    private val dbChatsManage= dbChatsManage(context)
+    private var chats_list=dbChatsManage.getChats(id)
+    private var chatsId=dbChatsManage.getChatsid(id)
+    private var toupdateList=ArrayList<String>()
+    private val databaseReference= FirebaseDatabase.getInstance().getReference()
+    private var ref=databaseReference.child("users").child(id!!).child("messages")
+    lateinit var ViewmodelListener:ChildEventListener
+    private var count=0
+    private var ii=0
+    var flag=false
+    var liveData=MutableLiveData<ArrayList<User>>()
 
    fun getChats(){
-       chatsname=dbChatsManage.getChatsid()
-       chats_list=dbChatsManage.getChats(id!!)
 
-       if(chatsname.size>0)
-           liveData.value=chats_list
+       if(chatsId.size>0)
+           liveData.value = chats_list
+
 
        databaseReference.child("users").child(id!!).child("messages").get().addOnSuccessListener {
            count=it.children.count()
+
            if(count==0)
-              liveData.value=chats_list
-           if(count==chats_list.size)
+              liveData.postValue(chats_list)
+           if(count<=chats_list.size)
                updateChats()
 
 
@@ -49,8 +47,8 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
            for (i in it.children){
 
-           if(!chatsname.contains( i.key.toString())) {
-               chatsname.add(i.key.toString())
+           if(!chatsId.contains( i.key.toString())) {
+
                getChat(i.key.toString())
            }
 
@@ -66,24 +64,18 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
 
     fun updateChats() {
-        toupdateList.addAll(chatsname)
-        databaseReference.child("users").child(id!!).child("messages").limitToFirst(1).get().addOnSuccessListener {
-            for (i in it.children) {
 
-                val userid = i.key
-
-                 updateChatInfo(userid)
+         flag=true
+        toupdateList.addAll(chatsId)
+        if(toupdateList.size>0)
+         updateChatInfo(toupdateList[0])
 
 
-            }
-
-
-
-            databaseReference.child("users").child(id!!).child("messages")
+        ViewmodelListener =   databaseReference.child("users").child(id!!).child("messages")
                 .addChildEventListener(object :
                     ChildEventListener {
                     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                        if (!chatsname.contains(snapshot.key.toString())) {
+                        if (!chatsId.contains(snapshot.key.toString())) {
                             getChat(snapshot.key.toString())
                         }
 
@@ -107,7 +99,7 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
 
 
-    }
+
 
     private fun updateChatInfo(userID: String?) {
         databaseReference.child("users").child(userID!!).child("messages").child(id!!)
@@ -121,12 +113,10 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
                     var message = i.getValue(Message::class.java)
                     if (message!!.senderid.equals(userid) && message!!.seen.equals("unseen"))
                         count++
-
                 }
 
-
                 var name = ""
-                var text = ""
+                var text: String
                 databaseReference.child("users").child(id).child("messages")
                     .child(userid).child("last").get().addOnSuccessListener {
 
@@ -155,28 +145,23 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
                         {
                             updateChatInfo(toupdateList[0])
                         }
+
                         val user = dbChatsManage.getChatById(userid,id)
-                        Log.d("ggggggggg",user.toString())
                         if(count!=user.useen?.toInt()||!user.last.equals(lastm)) {
 
+                            user.last = lastm
+                            user.time = time
+                            user.useen = count.toString()
 
-                            val newuser = User(
-                                user.name,
-                                user.Imageurl,
-                                user.userid,
-                                user.email,
-                                lastm,
-                                user.status,
-                                count.toString(),
-                                time
-                            )
-                            chats_list.removeAt(chatsname.indexOf(userid))
-                            chatsname.remove(user.userid)
-                            chats_list.add(0, newuser)
-                            chatsname.add(0, user.userid!!)
+                            chats_list.removeAt(chatsId.indexOf(userid))
+                            chatsId.remove(user.userid)
+                            chats_list.add(0, user)
+                            chatsId.add(0, user.userid!!)
                             dbChatsManage.deleteChat(id, user.userid)
-                            dbChatsManage.addChat(id, newuser)
-                            liveData.value = chats_list
+                            dbChatsManage.addChat(id, user)
+                            if (toupdateList.size == 0)
+                                liveData.postValue(chats_list)
+
 
                         }
 
@@ -187,11 +172,12 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
     fun addChat(user:User){
 
-        if(user!=null&&!chatsname.contains(user.userid)) {
+        if(user!=null&&!chatsId.contains(user.userid)) {
             dbChatsManage.addChat(id,user)
             chats_list .add(0,user)
-            chatsname.add(0,user.userid!!)
-            liveData.value=chats_list
+            chatsId.add(0,user.userid!!)
+            if(toupdateList.size==0)
+             liveData.value=chats_list
         }
 
     }
@@ -205,11 +191,12 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
              val user=it.getValue(User::class.java)
 
-             chatsname.add(0,idd)
+             chatsId.add(0,idd)
              chats_list.add(0,user!!)
-
             dbChatsManage.addChat(id!!,user)
-            liveData.value=chats_list
+
+            if(flag)
+             liveData.value=chats_list
 
             if(ii==count) {
                 updateChats()
@@ -221,6 +208,9 @@ class HomeChatsViewModel(activity: Activity) : ViewModel() {
 
         }
 
+    fun removeListener() {
+        ref.removeEventListener(ViewmodelListener)
+    }
 
 
 }

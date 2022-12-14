@@ -79,7 +79,7 @@
             android:layout_gravity="left"
             android:drawableStart="@drawable/ic_outline_lock_24"
             android:drawablePadding="5dp"
-            android:hint="password"
+            android:hint="Password"
             android:textSize="16sp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -155,7 +155,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:indeterminateTint="@color/primary"
+            android:indeterminateTint="@color/white"
 
             />
 

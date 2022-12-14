@@ -21,11 +21,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.momo.mymessage.ui.FullPhotoActivity
 import com.momo.mymessage.R
 import com.momo.mymessage.pogo.Message
-import com.momo.mymessage.ui.Chat_Activity
+import com.momo.mymessage.ui.ChatActivity
 import com.squareup.picasso.Picasso
 
 
-class InChat_Adabter (val listPositions:ArrayList<String>, val l:ArrayList<Message>, val activity: Chat_Activity, val list:ArrayList<Message>, onListItemClickk: onListItemClick) : RecyclerView.Adapter<InChat_Adabter.Holder>() {
+class ChatAdabter (val listPositions:ArrayList<String>, val l:ArrayList<Message>, val activity: ChatActivity, val list:ArrayList<Message>, onListItemClickk: onListItemClick) : RecyclerView.Adapter<ChatAdabter.Holder>() {
 
 
     var onListItem:onListItemClick
@@ -94,9 +94,9 @@ class InChat_Adabter (val listPositions:ArrayList<String>, val l:ArrayList<Messa
         Picasso.get().load(list.get(position).imgurl).into(holder.messageimg)
 
         if(listPositions.size!=0&&listPositions.contains(list[position].id))
-        holder.background.background=R.color.primary.toDrawable()
+         holder.background.background=R.color.blue.toDrawable()
         else
-        holder.background.background=null
+         holder.background.background=null
 
 
 
@@ -111,7 +111,7 @@ class InChat_Adabter (val listPositions:ArrayList<String>, val l:ArrayList<Messa
                 else{
                 listPositions.add(list[position].id!!)
                 l.add(list.get(position))
-                holder.background.background=R.color.primary.toDrawable()}
+                holder.background.background=R.color.blue.toDrawable()}
                 onListItem.onItemClick(holder,l)
 
                return true
@@ -130,7 +130,7 @@ class InChat_Adabter (val listPositions:ArrayList<String>, val l:ArrayList<Messa
             else{
                 listPositions.add(list[position].id!!)
                 l.add(list.get(position))
-                holder.background.background=R.color.primary.toDrawable()}
+                holder.background.background=R.color.blue.toDrawable()}
             onListItem.onItemClick(holder,l)}
 
         }
@@ -152,17 +152,23 @@ class InChat_Adabter (val listPositions:ArrayList<String>, val l:ArrayList<Messa
 
 
                 if (flag == 0) {
-                    flag = position
-                    mediaPlayer = MediaPlayer()
-                    mediaPlayer.setDataSource(
-                        activity.baseContext,
-                        list[position].record!!.toUri()!!
-                    )
-                    mediaPlayer.prepare()
+
+                       flag = position
+                       mediaPlayer = MediaPlayer()
+
+                       mediaPlayer.setDataSource(
+                           activity.baseContext,
+                           list[position].record!!.toUri()!!
+                       )
+
+                       mediaPlayer.prepareAsync()
+                    mediaPlayer.setOnPreparedListener{
+                        if(flag==position){
+                            holder.startbutton.visibility = View.GONE
+                            it.start()}
+                    }
                 }
-                    if(flag==position){
-                holder.startbutton.visibility = View.GONE
-                mediaPlayer.start()}
+
 
 
 

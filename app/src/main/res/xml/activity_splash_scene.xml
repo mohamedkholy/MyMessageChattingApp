@@ -16,13 +16,14 @@
         <Constraint
             android:id="@+id/logo_background"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:alpha="0"
             app:transitionEasing="cubic(1,0,0.8,0.8)" />
     </ConstraintSet>
+
 
     <ConstraintSet android:id="@+id/end">
         <Constraint android:id="@id/widget" />
@@ -40,7 +41,7 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
-        app:duration="1000"
+        app:duration="750"
         app:autoTransition="animateToEnd"
         />
 </MotionScene>

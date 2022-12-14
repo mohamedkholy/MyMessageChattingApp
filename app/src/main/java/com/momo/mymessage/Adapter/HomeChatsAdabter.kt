@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -16,17 +15,16 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.momo.mymessage.R
 import com.momo.mymessage.databinding.ChatOutItemBinding
-import com.momo.mymessage.db.db_chats_manage
-import com.momo.mymessage.pogo.Message
+import com.momo.mymessage.db.dbChatsManage
 import com.momo.mymessage.pogo.User
-import com.momo.mymessage.ui.Chat_Activity
+import com.momo.mymessage.ui.ChatActivity
 import com.squareup.picasso.Picasso
 
-class chats_Adabter(var activity: Activity,val list:ArrayList<User>) : RecyclerView.Adapter<chats_Adabter.Holder>() {
+class HomeChatsAdabter(var activity: Activity, val list:ArrayList<User>) : RecyclerView.Adapter<HomeChatsAdabter.Holder>() {
 
 val ref=FirebaseDatabase.getInstance().getReference().child("users")
 val id=FirebaseAuth.getInstance().currentUser!!.uid
-val dbChatsManage=db_chats_manage(activity)
+val dbChatsManage=dbChatsManage(activity)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
        val binding=ChatOutItemBinding.bind(LayoutInflater.from(parent.context).inflate(R.layout.chat_out_item,null,false))
@@ -37,10 +35,13 @@ val dbChatsManage=db_chats_manage(activity)
 
     override fun onBindViewHolder(holder: Holder, @SuppressLint("RecyclerView") position: Int) {
 
+        try {
+
+
         if(list.get(position).userid!!.equals(id))
             holder.binding.name.setText("You")
         else
-        holder.binding.name.setText(list.get(position).name)
+            holder.binding.name.setText(list.get(position).name)
 
         Picasso.get().load(list.get(position).Imageurl).into(holder.binding.img)
 
@@ -83,7 +84,7 @@ val dbChatsManage=db_chats_manage(activity)
 
 
         holder.binding.root.setOnClickListener{
-            var intent = Intent(activity, Chat_Activity::class.java)
+            var intent = Intent(activity, ChatActivity::class.java)
             intent.putExtra("user",User(list.get(position).name,list.get(position).Imageurl,list.get(position).userid,list.get(position).email))
             activity.startActivity(intent)
         }
@@ -93,8 +94,10 @@ val dbChatsManage=db_chats_manage(activity)
       ref.child(list[position].userid!!).child("name").addValueEventListener(object :ValueEventListener{
           override fun onDataChange(snapshot: DataSnapshot) {
               val name=snapshot.getValue().toString()
+
               if(!name.equals("null")&&!list.get(position).userid!!.equals(id))
-              holder.binding.name.setText(name)
+               holder.binding.name.setText(name)
+
               dbChatsManage.updateChatname(name,list.get(position).userid!!)
           }
 
@@ -107,18 +110,20 @@ val dbChatsManage=db_chats_manage(activity)
         ref.child(list[position].userid!!).child("Imageurl").addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val img=snapshot.getValue().toString()
+
                if(!img.equals("null")){
                 Picasso.get().load(img).into(holder.binding.img)
+
                 dbChatsManage.updateChatimg(img,list.get(position).userid!!)}
-            }
+                }
             override fun onCancelled(error: DatabaseError) {
             }
         })
 
-
-
-
-
+        }
+        catch (e:Exception){
+            Log.d("gggggggggggggggggggggg","gg  "+e.localizedMessage)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -3,7 +3,6 @@ package com.momo.mymessage.ui
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,7 +32,7 @@ class login : AppCompatActivity() {
 
 
         binding.signuup.setOnClickListener{
-            val intent=Intent(this, SignUp::class.java)
+            val intent=Intent(this, SignUpActivity::class.java)
             startActivity(intent)
 
            }

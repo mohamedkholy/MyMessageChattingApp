@@ -1,49 +1,53 @@
 package com.momo.mymessage.ViewModels
 
+import android.app.Application
 import android.media.MediaPlayer
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.momo.mymessage.R
-import com.momo.mymessage.db.db_messages_manage
+import com.momo.mymessage.db.dbMessagesManage
 import com.momo.mymessage.pogo.Message
-import com.momo.mymessage.ui.Chat_Activity
 
 
-class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:String):ViewModel() {
+class ChatViewModel(application: Application):AndroidViewModel(application) {
 
 
-   private val dbMessagesManage=db_messages_manage(activity)
-   private  var  idList=ArrayList<String>()
-   private  var  list=ArrayList<Message>()
-   val liveData=MutableLiveData<ArrayList<Message>>(list)
-   val ref= FirebaseDatabase.getInstance().getReference().child("users").child(id!!).child("messages").child(userid).child("chats")
-    lateinit var listner:ChildEventListener
-    val incoming_Message=MediaPlayer.create(activity,R.raw.incoming)
+    private val context=getApplication<Application>().applicationContext
+    private val id= FirebaseAuth.getInstance().currentUser!!.uid
+    private val dbMessagesManage=dbMessagesManage(context)
+    private  var  idList=ArrayList<String>()
+    private  var  list=ArrayList<Message>()
+    val liveData=MutableLiveData<ArrayList<Message>>(list)
+    private val incoming_Message=MediaPlayer.create(context,R.raw.incoming)
     var flag=0
-    lateinit var x:String
-
-
+    private lateinit var x:String
+    private lateinit var ChatViewModelListner:ChildEventListener
+    private val sp=context.getSharedPreferences("CurrentUser",0)
+    private val userid= sp.getString("userid",null).toString()
+    private val ref= FirebaseDatabase.getInstance().getReference().child("users").child(id!!).child("messages").child(userid).child("chats")
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun get_messages(){
 
+
+        if(list.size==0){
         list=dbMessagesManage.getmessages(userid,id!!)
-        idList=dbMessagesManage.getMessagesIDs(userid,id!!)
+        idList=dbMessagesManage.getMessagesIDs(userid,id!!)}
         liveData.value=list
 
 
         var listt=ArrayList<Message>()
         ref.get() .addOnCompleteListener{
             if(it.isSuccessful){
-                val sp=activity.getSharedPreferences("CurrentUser",0)
-                 x= sp.getString("userid",null).toString()
+
                 for (i in it.result.children) {
                     val message = i.getValue(Message::class.java)!!
                     if(!list.contains(message)||(message.seen.equals("unseen")&&message.senderid.equals(userid))){
@@ -55,7 +59,7 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
 
 
 
-                    save_message(message)
+                    saveMessage(message)
 
 
                 }
@@ -66,7 +70,7 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
 
 
             flag=1
-            Messages_listner()
+            FireMessagesListner()
 
 
     }
@@ -74,16 +78,16 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
 
     }
 
-    private fun Messages_listner() {
 
+    private fun FireMessagesListner() {
 
-          listner=ref.addChildEventListener(object : ChildEventListener {
+          ChatViewModelListner=ref.addChildEventListener(object : ChildEventListener {
 
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?)
             {
                 val message=snapshot.getValue(Message::class.java)
                 if(!idList.contains(message!!.id))
-                    save_message(message!!)
+                    saveMessage(message!!)
 
             }
 
@@ -91,20 +95,20 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
             {
                 val message=snapshot.getValue(Message::class.java)
                 if(message!!.senderid.equals(id))
-                save_message(message)
+                    saveMessage(message)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot){}
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
             override fun onCancelled(error: DatabaseError){}
 
-
         })
     }
 
-    private fun save_message(message: Message) {
 
-        if(x.equals(userid)){
+    private fun saveMessage(message: Message) {
+
+
         if (!message.seen.equals("seen")&&message.senderid.equals(userid)){
 
             val map= hashMapOf<String,Any>()
@@ -146,7 +150,7 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
         }
 
         liveData.value=list
-        }
+
     }
 
      fun deletMessages(deletelist: ArrayList<Message>) {
@@ -168,6 +172,9 @@ class ChatViewModel(val activity: Chat_Activity, val userid:String, val id:Strin
 
     }
 
+    fun removeListener() {
+        ref.removeEventListener(ChatViewModelListner)
+    }
 
 
 }

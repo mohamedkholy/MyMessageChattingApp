@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +23,7 @@ import com.momo.mymessage.databinding.ActivitySignupBinding
 
 
 
-class SignUp : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
 
      lateinit var binding:ActivitySignupBinding
      val auth=FirebaseAuth.getInstance()
@@ -92,13 +91,13 @@ class SignUp : AppCompatActivity() {
     }
 
     private fun askStroagePer_getImage() {
-        if(ContextCompat.checkSelfPermission(this@SignUp,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(this@SignUpActivity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)
         {
             getImage()
 
         }
-        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@SignUp,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            val alertDialog=AlertDialog.Builder(this@SignUp)
+        else if(ActivityCompat.shouldShowRequestPermissionRationale(this@SignUpActivity,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            val alertDialog=AlertDialog.Builder(this@SignUpActivity)
 
             alertDialog.apply {
                 setTitle("Permission Required")
@@ -238,7 +237,7 @@ class SignUp : AppCompatActivity() {
 
         }
         else{
-            Toast.makeText(this@SignUp,"You can not access gallary",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@SignUpActivity,"You can not access gallary",Toast.LENGTH_SHORT).show()
 
         }
 

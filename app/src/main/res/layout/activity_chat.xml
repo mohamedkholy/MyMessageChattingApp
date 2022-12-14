@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/chat_background"
-    tools:context=".ui.Chat_Activity"
+    tools:context=".ui.ChatActivity"
     android:id="@+id/main_layout"
     >
 
@@ -116,8 +116,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_weight="1"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/linear"
+        android:visibility="gone"
 
         >
         <LinearLayout
@@ -281,7 +281,7 @@
             android:layout_height="100dp"
             android:layout_gravity="left"
             android:layout_marginLeft="40dp"
-            android:background="@drawable/button_primary_item"
+            android:background="@drawable/getdata_menu_shape"
             android:drawableBottom="@drawable/ic_baseline_add_photo_alternate_24"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
@@ -297,7 +297,7 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="right"
             android:layout_marginRight="40dp"
-            android:background="@drawable/button_primary_item"
+            android:background="@drawable/getdata_menu_shape"
             android:drawableBottom="@drawable/ic_baseline_add_a_photo_24"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
@@ -332,7 +332,7 @@
         <ProgressBar
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:indeterminateTint="@color/primary"
+            android:indeterminateTint="@color/white"
             android:layout_gravity="center"
             />
         <TextView
@@ -355,9 +355,19 @@
         android:gravity="center"
         android:clickable="false"
         android:background="#99000000"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:visibility="gone"
         >
+
+        <TextView
+            android:id="@+id/recording_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00 : 00 : 00"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_marginBottom="20dp"/>
+
 
         <TextView
             android:text="Recording..."

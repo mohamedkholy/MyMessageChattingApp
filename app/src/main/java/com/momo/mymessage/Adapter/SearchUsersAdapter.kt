@@ -1,10 +1,8 @@
 package com.momo.mymessage.Adapter
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -14,11 +12,10 @@ import com.momo.mymessage.R
 import com.momo.mymessage.databinding.UserListItemBinding
 import com.momo.mymessage.pogo.User
 
-import com.momo.mymessage.ui.home
 import com.squareup.picasso.Picasso
 
-class SearchUsers_Adapter(options: FirebaseRecyclerOptions<User>,var context: Activity) :
-    FirebaseRecyclerAdapter<User, SearchUsers_Adapter.Holder>(options) {
+class SearchUsersAdapter(options: FirebaseRecyclerOptions<User>, var context: Activity) :
+    FirebaseRecyclerAdapter<User, SearchUsersAdapter.Holder>(options) {
 
 val id=FirebaseAuth.getInstance().uid
 
@@ -29,7 +26,7 @@ val id=FirebaseAuth.getInstance().uid
                 .inflate(R.layout.user_list_item, null, false)
         )
 
-        var holder= SearchUsers_Adapter.Holder(binding)
+        var holder= SearchUsersAdapter.Holder(binding)
         return holder
 
     }

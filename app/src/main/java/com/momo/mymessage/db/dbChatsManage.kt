@@ -1,16 +1,12 @@
 package com.momo.mymessage.db
 
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
 import androidx.core.content.contentValuesOf
-import com.momo.mymessage.pogo.Message
 import com.momo.mymessage.pogo.User
-import java.util.*
 import kotlin.collections.ArrayList
 
-class db_chats_manage(val context: Context) {
+class dbChatsManage(val context: Context) {
 val mydatabase=MyDataBase(context)
 
 
@@ -56,10 +52,12 @@ fun deleteChat(id:String,userid:String){
 
         return list
     }
-    fun getChatsid():ArrayList<String>{
+    fun getChatsid(id:String):ArrayList<String>{
         val list=ArrayList<String>()
         val db=mydatabase.readableDatabase
-        val cursor=db.rawQuery("select id from chats ORDER by order1 DESC",null)
+        val cursor=db.rawQuery("select id from chats where user=?  ORDER by order1 DESC ",
+            arrayOf(id)
+        )
         while (cursor.moveToNext()){
             list.add(cursor.getString(0))
 
