@@ -122,7 +122,7 @@ val dbChatsManage=dbChatsManage(activity)
 
         }
         catch (e:Exception){
-            Log.d("gggggggggggggggggggggg","gg  "+e.localizedMessage)
+            Log.d("HomechatAdapter:OnBind",e.localizedMessage)
         }
     }
 

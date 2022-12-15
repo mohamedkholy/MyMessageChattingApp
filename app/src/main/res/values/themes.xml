@@ -46,4 +46,10 @@
         <item name="cornerSizeBottomRight">50dp</item>
     </style>
 
+    <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">#f4511e</item>
+        <item name="android:progressTint">#388e3c</item>
+        <item name="android:thumbTint">#c51162</item>
+    </style>
+
 </resources>
